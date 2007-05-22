@@ -1,0 +1,18 @@
+Guake Todo
+==========
+
+ * Finish Preferences window
+
+ * finish setup.py installation script
+
+ * Make dbus interface works
+
+ * Pynotify can be used to notify when guake is opened
+
+ * Talk about egg.trayicon existance in this project =D
+
+ * Cleanup image names and maybe create a directory for them
+
+ * Maybe convert all svg images to png, we needn't vetorial
+   graphics at this moment =D (but is important to store the
+   svg `source files' to edit them later)
