@@ -36,3 +36,5 @@ Guake Todo
  * Maybe convert all svg images to png, we needn't vetorial
    graphics at this moment =D (but is important to store the
    svg `source files' to edit them later)
+
+ * Provide an autotools based installation (Lincoln)
