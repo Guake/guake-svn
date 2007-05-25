@@ -25,6 +25,8 @@ Guake Todo
 
  * Use pynotify to show all errors
 
+ * Create or install a default schema to gconf to keep out configuration errors
+
  * Maybe convert all svg images to png, we needn't vetorial
    graphics at this moment =D (but is important to store the
    svg `source files' to edit them later)
