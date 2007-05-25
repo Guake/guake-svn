@@ -32,7 +32,7 @@ import dbus
 
 import os
 import sys
-
+os.chdir(os.path.dirname(os.path.abspath(__file__))) #tosco :)
 import utils
 import common
 from common import _
@@ -273,7 +273,7 @@ class Guake(SimpleGladeApp):
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
-        globalhotkeys.bind(key, self.show_hide)
+        globalhotkeys.bind(key or "F12", self.show_hide)
 
         # trayicon!
         tray_icon = GuakeStatusIcon()
@@ -430,7 +430,7 @@ class Guake(SimpleGladeApp):
 
     def set_bgcolor(self):
         color = self.client.get_string(GCONF_PATH+'style/background/color')
-        bgcolor = gtk.gdk.color_parse(color)
+        bgcolor = gtk.gdk.color_parse(color or "#000000")
         for i in self.term_list:
             i.set_color_background(bgcolor)
             i.set_background_tint_color(bgcolor)
@@ -443,7 +443,7 @@ class Guake(SimpleGladeApp):
 
     def set_fgcolor(self):
         color = self.client.get_string(GCONF_PATH+'style/font/color')
-        fgcolor = gtk.gdk.color_parse(color)
+        fgcolor = gtk.gdk.color_parse(color or "#FFFFFF")
         for i in self.term_list:
             i.set_color_dim(fgcolor)
             i.set_color_cursor(fgcolor)
@@ -500,7 +500,7 @@ class Guake(SimpleGladeApp):
 
         # TODO: make new terminal opens in the same dir of the already in use.
         shell_name = self.client.get_string(GCONF_PATH+'general/default_shell')
-        self.term_list[LastPos].fork_command(shell_name,
+        self.term_list[LastPos].fork_command(shell_name or "bash",
                 directory=os.path.expanduser('~'))
 
         image = gtk.Image()

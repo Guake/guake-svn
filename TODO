@@ -13,6 +13,18 @@ Guake Todo
 
  * Cleanup image names and maybe create a directory for them
 
+ * Maybe create a namespace to store all standard messages, specialy errors and warnings, and so, use gettext in them ! Obvious :) 
+
+ * Add keybindings to:
+	# Add new tab
+	# remove current tab
+	# Set window size, here we will set only 10 default sizes:
+		# Ctrl-Super-1 -> set to 10% of window
+		...
+		# Ctrl-Super-0 -> set to 100% of window
+
+ * Use pynotify to show all errors
+
  * Maybe convert all svg images to png, we needn't vetorial
    graphics at this moment =D (but is important to store the
    svg `source files' to edit them later)

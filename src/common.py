@@ -48,7 +48,7 @@ def std_visible(value):
 def datapath(x):
     f = os.path.abspath(os.path.join('..', 'data', x))
     if not os.path.exists(f):
-        raise IOError('No sunch file or directory')
+        raise IOError('No such file or directory')
     return f
 
 def hexify_color(c):
