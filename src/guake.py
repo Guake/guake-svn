@@ -69,7 +69,6 @@ class PrefsDialog(SimpleGladeApp):
 
         self.guake = guakeinstance
         self.client = gconf.client_get_default()
-
         # the first position in tree will store the keybinding path in gconf,
         # and the user doesn't worry with this, lest hide that =D
         model = gtk.TreeStore(str, str, str, bool)
@@ -97,7 +96,15 @@ class PrefsDialog(SimpleGladeApp):
 
         self.populate_shell_combo()
         self.populate_keys_tree()
-
+        self.load_configs()
+        self.get_widget('config-window').hide()
+        
+    def show(self):
+        self.get_widget('config-window').show_all()
+    def hide(self):
+        self.get_widget('config-window').hide()
+        
+    def load_configs(self):
         # getting values from gconf
 
         # shells list
@@ -118,7 +125,7 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('ontop-checkbutton').set_active(ac)
 
         # winsize
-        val = self.client.get_int(GCONF_PATH + 'general/window_size')
+        val = float(self.client.get_string(GCONF_PATH + 'general/window_size'))
         self.get_widget('winsize-hscale').set_value(val)
 
         # tab pos
@@ -218,13 +225,15 @@ class PrefsDialog(SimpleGladeApp):
 
     def on_winsize_hscale_value_changed(self, hscale):
         val = hscale.get_value()
-        self.client.set_int(GCONF_PATH + 'general/window_size', int(val))
+        self.client.set_string(GCONF_PATH + 'general/window_size', str(val))
+        proportion=float(val)/100
+        self.guake.stretch(proportion,True)
 
     def on_tabbottom_radiobutton_toggled(self, bnt):
         st = bnt.get_active() and 'bottom' or 'top'
         self.client.set_string(GCONF_PATH + 'general/tabpos', st)
         self.guake.set_tabpos()
-
+        
     def on_tabtop_radiobutton_toggled(self, bnt):
         st = bnt.get_active() and 'top' or 'bottom'
         self.client.set_string(GCONF_PATH + 'general/tabpos', st)
@@ -269,7 +278,6 @@ class Guake(SimpleGladeApp):
     def __init__(self):
         super(Guake, self).__init__(common.datapath('guake.glade'))
         self.client = gconf.client_get_default()
-
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
@@ -285,17 +293,22 @@ class Guake(SimpleGladeApp):
         self.notebook = self.get_widget('notebook-teminals')
         self.toolbar = self.get_widget('toolbar')
         self.mainframe = self.get_widget('mainframe')
-
+        
         self.window.set_keep_above(True)
         self.window.set_geometry_hints(min_width=1, min_height=1)
-
+        self.use_animation=True
         self.term_list = []
 
         self.getScreenSize()
         self.visible = False
-
         self.addTerm()
-
+        self.load_config()
+        """
+        _weakDialog = PrefsDialog(self)
+        _weakDialog.hide()        
+        _weakDialog.load_configs()
+        del(_weakDialog)
+        """
     def show_menu(self, *args):
         menu = self.get_widget('tray-menu')
         menu.popup(None, None, None, 3, gtk.get_current_event_time())
@@ -312,15 +325,15 @@ class Guake(SimpleGladeApp):
     def show(self, wwidth, hheight):
         self.getScreenSize()
         self.window.set_position(gtk.WIN_POS_NONE)
+        
         self.window.set_gravity(gtk.gdk.GRAVITY_NORTH)
-        self.window.move(gtk.gdk.screen_width() / 2, 0)
+        self.window.move(0, 0)
         self.visible = True
         self.window.show_all()
         self.window.stick()
         self.setOnTop(self.ON_TOP)
         self.window.set_resizable(True)
         self.animateShow()
-
         if not self.term_list:
             self.addTerm()
 
@@ -420,13 +433,28 @@ class Guake(SimpleGladeApp):
         self.width = self.window.get_screen().get_width()
         self.setDefaultSize(self.width,self.height)
 
+    def setDefaultSize(self,userWidth,userHeight):
+        self.desiredWidth=userWidth
+        self.desiredHeight=userHeight
+        
     def determineTabsVisibility(self):
         if self.notebook.get_n_pages() == 1:
             self.notebook.set_show_tabs(False)
         else:
             self.notebook.set_show_tabs(True)
-
-    # -- format functions --
+    def stretch(self,percent,shownow=False):  
+        self.getScreenSize()
+        self.divisionFactor=int((self.desiredHeight*percent)/100)
+        self.multiplyFactor=int(100)
+        self.window.set_size_request(self.desiredWidth,1)
+        if percent==1:
+            self.fullscreen=True    
+        else:
+            self.fullscreen=False
+        while self.divisionFactor < 3:
+            self.setAnimationProportions(percent+0.1)
+        if shownow==True:
+            self.animateShow()    # -- format functions --
 
     def set_bgcolor(self):
         color = self.client.get_string(GCONF_PATH+'style/background/color')
@@ -442,13 +470,14 @@ class Guake(SimpleGladeApp):
                 i.set_background_image_file(image)
 
     def set_fgcolor(self):
-        color = self.client.get_string(GCONF_PATH+'style/font/color')
+        color = self.client.get_string(GCONF_PATH+'font/color')
         fgcolor = gtk.gdk.color_parse(color or "#FFFFFF")
         for i in self.term_list:
             i.set_color_dim(fgcolor)
             i.set_color_cursor(fgcolor)
             i.set_color_highlight(fgcolor)
             i.set_color_foreground(fgcolor)
+            i.show()
 
     def set_font(self):
         font_name = self.client.get_string(GCONF_PATH+'style/font/style')
@@ -474,7 +503,7 @@ class Guake(SimpleGladeApp):
     # -- callbacks --
 
     def on_prefs_menuitem_activate(self, *args):
-        PrefsDialog(self)
+        PrefsDialog(self).show()
 
     def on_about_menuitem_activate(self, *args):
         AboutDialog()

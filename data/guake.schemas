@@ -44,7 +44,7 @@
             <key>/schemas/apps/guake/general/window_size</key>
             <applyto>/apps/guake/general/window_size</applyto>
             <owner>guake</owner>
-            <type>int</type>
+            <type>string</type>
             <default>50</default>
             <locale name="C">
                 <short>Window size.</short>
