@@ -1,0 +1,18 @@
+Guake
+=====
+
+2007-05-26 Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* AUTHORS,
+	* INSTALL,
+	* NEWS,
+	* autogen.sh,
+	* Makefile.am,
+	* configure.ac,
+	* data/Makefile.am,
+	* src/Makefile.am,
+	* src/globalhotkeys/Makefile.am,
+	* src/guake_globals.py.in,
+	* src/guake: Added
+
+	* setup.py: Removed

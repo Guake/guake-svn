@@ -1,0 +1,21 @@
+SUBDIRS = globalhotkeys
+
+guakedir = $(prefix)/bin
+bin_SCRIPTS = guake
+
+guakelibdir = $(libdir)/guake
+guakelib_DATA = \
+	dialogs.py \
+	guake.py \
+	main.py \
+	utils.py \
+	common.py \
+	guakeApplet.py \
+	simplegladeapp.py \
+	dbusiface.py \
+	statusicon.py \
+	guake_globals.py
+
+EXTRA_DIST =  \
+	$(bin_SCRIPTS) \
+	$(guakelib_DATA)
