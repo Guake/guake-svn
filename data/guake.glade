@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Fri May 25 20:34:32 2007 by gabriel@mercurio-->
+<!--Generated with glade3 3.2.1 on Sun May 27 12:38:02 2007 by pythonwarrior@pidinti-->
 <glade-interface>
   <widget class="GtkWindow" id="window-root">
     <property name="title" translatable="yes">Guake</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_MOUSE</property>
-    <property name="icon">guakelogo.svg</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="decorated">False</property>
@@ -49,7 +48,7 @@
                   <widget class="GtkImage" id="image1">
                     <property name="width_request">28</property>
                     <property name="visible">True</property>
-                    <property name="pixbuf">new_guakelogo.png</property>
+                    <property name="stock">gtk-missing-image</property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -90,7 +89,7 @@
                         <child>
                           <widget class="GtkImage" id="image2">
                             <property name="visible">True</property>
-                            <property name="pixbuf">addTerm.svg</property>
+                            <property name="stock">gtk-missing-image</property>
                             <property name="icon_size">1</property>
                           </widget>
                         </child>

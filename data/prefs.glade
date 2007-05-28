@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Fri May 25 20:19:09 2007 by gabriel@mercurio-->
+<!--Generated with glade3 3.2.1 on Sun May 27 13:29:16 2007 by pythonwarrior@pidinti-->
 <glade-interface>
   <widget class="GtkWindow" id="config-window">
     <property name="width_request">460</property>
@@ -21,10 +21,10 @@
               <widget class="GtkHBox" id="hbox9">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkImage" id="imgIcon">
+                  <widget class="GtkImage" id="image_logo">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
-                    <property name="pixbuf">guakeabt.png</property>
+                    <property name="stock">gtk-missing-image</property>
                     <property name="icon_size">6</property>
                   </widget>
                   <packing>
@@ -236,7 +236,7 @@
                                           <widget class="GtkImage" id="image1">
                                             <property name="visible">True</property>
                                             <property name="xalign">0</property>
-                                            <property name="pixbuf">tabdown.svg</property>
+                                            <property name="stock">gtk-missing-image</property>
                                           </widget>
                                         </child>
                                         <child>
@@ -264,7 +264,7 @@
                                           <widget class="GtkImage" id="image2">
                                             <property name="visible">True</property>
                                             <property name="xalign">0</property>
-                                            <property name="pixbuf">tabup.svg</property>
+                                            <property name="stock">gtk-missing-image</property>
                                           </widget>
                                         </child>
                                         <child>
