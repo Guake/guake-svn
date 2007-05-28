@@ -3,8 +3,6 @@ Guake Todo
 
  * Finish Preferences window
 
- * Make dbus interface works
-
  * Pynotify can be used to notify when guake is opened
 
  * Talk about egg.trayicon existance in this project =D
@@ -26,10 +24,6 @@ Guake Todo
  * Create or install a default schema to gconf to keep out configuration errors
 
  * Show error when keybind fails
- 
- * Maybe create a lock on /var/lock or /tmp/.guake#timestamp# to determine if only one instance of guake are openned. Or maybe use dbus for it.
-    # It will need a special care putting a timestamp on lock and updating the timestamp of lock, because if guake crashes and user try to open guake, it will not open because have a lock.
-    # if using timestamp in lock guake can check if current timestamp is too old, and them choice to start or suicide.
  
  * Maybe convert all svg images to png, we needn't vetorial
    graphics at this moment =D (but is important to store the

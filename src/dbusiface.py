@@ -29,7 +29,7 @@ dbus.glib.threads_init()
 class DaemonDBus(dbus.service.Object):
     def __init__(self, bus_name, guakeinstance):
         self.guake = guakeinstance
-        object_path = '/org/gnome/Guake/DBus'
+        object_path = '/DBus'
         super(DaemonDBus, self).__init__(bus_name, object_path)
         
     @dbus.service.method('org.gnome.Guake.DBus')
@@ -56,7 +56,7 @@ class DaemonDBus(dbus.service.Object):
     def quit(self):
         self.guake.quit()
 
-def get_bus(guakeinstance):
+def dbus_init(guakeinstance):
     try:
         session_bus = dbus.SessionBus()
         name = dbus.service.BusName('org.gnome.Guake.DBus', bus=session_bus)

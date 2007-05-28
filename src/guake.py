@@ -617,23 +617,37 @@ def main():
 
     options, args = parser.parse_args()
 
+    bus = dbus.SessionBus()
+    try:
+        remote_object = bus.get_object('org.gnome.Guake.DBus', '/DBus')
+    except dbus.DBusException:
+        return
+
     if options.show_hide:
-        # do the show/hide!
-        pass
+        remote_object.show_hide()
+        sys.exit(0)
 
     if options.show_preferences:
-        # shows preference window
-        pass
+        remote_object.show_prefs()
+        sys.exit(0)
 
     if options.show_about:
-        # shows about window
-        pass
+        remote_object.show_about()
+        sys.exit(0)
 
     if options.quit:
-        # go away!
-        pass
+        remote_object.quit()
+        sys.exit(0)
+
+    # here we know that guake was called without any parameter and it is
+    # already running, so, lets toggle glade visibility and exit!
+    remote_object.show_hide()
+    sys.exit(0)
 
 
 if __name__ == '__main__':
+    from dbusiface import dbus_init
     main()
-    Guake().run()
+    g = Guake()
+    dbus_init(g)
+    g.run()
