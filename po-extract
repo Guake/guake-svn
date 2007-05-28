@@ -26,7 +26,7 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     echo edit that with your prefered po editor, like poedit or gtranslator.
     echo
     echo After that please send me your work to gabrielteratos@gmail.com
-    echo with subject: "GUAKE TRANSLATION"
+    echo with subject: GUAKE TRANSLATION
     echo Thanks!
     exit 0
 fi
