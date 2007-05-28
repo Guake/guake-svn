@@ -2,7 +2,6 @@ Guake
 =====
 
 2007-05-26 Lincoln de Sousa <lincoln@archlinux-br.org>
-
 	* AUTHORS,
 	* INSTALL,
 	* NEWS,
@@ -16,3 +15,30 @@ Guake
 	* src/guake: Added
 
 	* setup.py: Removed
+
+2007-05-27 Lincoln de Sousa <lincoln@archlinux-br.org>
+	* data/guake.glade,
+	* data/prefs.glade,
+	* data/about.glade: Removing image path references, because libglade does
+	not have a parameter to set `pixmap dir', so we make it in python.
+
+	* src/guake: Renamed to src/guake.in
+
+	* src/guake.in: Added to be the main script instead of guake.py, it only calls
+	guake.run function.
+
+	* m4/*: Added.
+
+	* configure.ac: Adding m4 as macro dir, adding a call to AS_AC_EXPAND set
+	LIBDIR with libdir value and adding `src/guake' as an output file.
+
+	* src/Makefile.am: Changing guake dir from prefix/bin to bindir. It was
+	made to able the user to change bin dir with the `configure' script.
+
+	* src/common.py,
+	* src/guake.py: datapath function was splitted in pixmapfile and gladefile
+	functions because if this project doesn't stop to grow, we will separate
+	images from glade files in data dir.
+
+	* src/guake.py: Adding image references told above and some code cleanup.
+
