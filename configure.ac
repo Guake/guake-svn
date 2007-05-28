@@ -20,6 +20,8 @@ AC_INIT([guake], [0.1], [lincoln@archlinux-br.org])
 
 AC_CONFIG_HEADERS([config.h])
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AM_INIT_AUTOMAKE([-Wall -Werror])
 
 AC_PROG_LIBTOOL
@@ -46,8 +48,10 @@ PKG_CHECK_MODULES([DEPENDENCIES], [
 AC_SUBST([DEPENDENCIES_CFLAGS])
 AC_SUBST([DEPENDENCIES_LIBS])
 
-dnl gconf
+dnl expanding useful variables
+AS_AC_EXPAND(LIBDIR, ${libdir})
 
+dnl gconf
 AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
 if test x"$GCONFTOOL" = xno; then
     AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
@@ -71,6 +75,7 @@ AC_CONFIG_FILES([
     src/Makefile
     src/globalhotkeys/Makefile
     src/guake_globals.py
+    src/guake
 ])
 
 AC_OUTPUT
