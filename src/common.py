@@ -22,13 +22,15 @@ import gtk, sys
 import os
 import locale
 import gettext
+import guake_globals
 
-locale_domain = 'guake'
-locale_dir = './locale'
+# TODO: This should be a function and called in the main guake script.
+# otherwise common must be imported in main script
+locale.setlocale(locale.LC_ALL, '')
+gettext.bindtextdomain(guake_globals, guake_globals.locale_dir)
+gettext.textdomain(guake_globals)
 
-locale.setlocale(locale.LC_ALL,'')
-gettext.bindtextdomain(locale_domain,locale_dir)
-gettext.textdomain(locale_domain)
+# Internationalization purposes.
 _ = gettext.gettext
 
 def test_dbus(bus, interface):
@@ -45,10 +47,16 @@ def std_visible(value):
         sys.stderr = sys.__stderr__
         sys.stdout = sys.__stdout__
 
-def datapath(x):
-    f = os.path.abspath(os.path.join('..', 'data', x))
+def pixmapfile(x):
+    f = os.path.join(guake_globals.image_dir, x)
     if not os.path.exists(f):
-        raise IOError('No such file or directory')
+        raise IOError('No such file or directory: %s' % f)
+    return f
+
+def gladefile(x):
+    f = os.path.join(guake_globals.glade_dir, x)
+    if not os.path.exists(f):
+        raise IOError('No such file or directory: %s' % f)
     return f
 
 def hexify_color(c):
