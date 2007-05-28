@@ -1,32 +1,31 @@
 """
- SimpleGladeApp.py
- Module that provides an object oriented abstraction to pygtk and libglade.
- Copyright (C) 2004 Sandino Flores Moreno
+Copyright (C) 2004 Sandino Flores Moreno
 
- Pequenas alteracoes Lincoln de Sousa <pythonwarrior@gmail.com>
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+
+simplegladeapp.py - Module that provides an object oriented abstraction
+to pygtk and libglade.
+
+    - Adding `object' as base class to SimpleGladeApp class.
+    by Lincoln de Sousa <lincoln@archlinux-br.org>
 """
 
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2.1 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-# USA
 
-try:
-    import pygtk
-    pygtk.require('2.0')
-    # pygtk nao eh obrigatorio pro funcionamento
-except ImportError:
-    pass
+import pygtk
+pygtk.require('2.0')
 
 import os
 import sys
