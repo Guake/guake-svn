@@ -21,7 +21,7 @@ Boston, MA 02111-1307, USA.
 """
 # pretty hammer to run guake from installation directory
 import sys
-sys.path.insert(0, '@INSTALLDIR@')
+sys.path.insert(0, '@LIBDIR@/guake')
 
 import guake
 guake.main()

@@ -1,6 +1,6 @@
 SUBDIRS = globalhotkeys
 
-guakedir = $(prefix)/bin
+guakedir = $(bindir)
 bin_SCRIPTS = guake
 
 guakelibdir = $(libdir)/guake
