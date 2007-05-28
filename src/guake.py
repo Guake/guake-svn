@@ -44,8 +44,7 @@ SHELLS_FILE = '/etc/shells'
 GCONF_PATH = '/apps/guake/'
 GCONF_KEYS = GCONF_PATH + 'keybindings/'
 
-GHOTKEYS = ((GCONF_KEYS+'global/show_hide', _('Toggle terminal visibility'),
-                'F12'),)
+GHOTKEYS = ((GCONF_KEYS+'global/show_hide', _('Toggle terminal visibility')),)
 
 LHOTKEYS = ((GCONF_KEYS+'local/new_tab', _('New tab'),),
             (GCONF_KEYS+'local/close_tab', _('Close tab')),
@@ -55,19 +54,33 @@ LHOTKEYS = ((GCONF_KEYS+'local/new_tab', _('New tab'),),
 
 class AboutDialog(SimpleGladeApp):
     def __init__(self):
-        super(AboutDialog, self).__init__(common.datapath('about.glade'),
+        super(AboutDialog, self).__init__(common.gladefile('about.glade'),
                 root='aboutdialog')
         # the terminal window can be opened and the user *must* see this window
         self.get_widget('aboutdialog').set_keep_above(True)
 
+        # images
+        ipath = common.pixmapfile('guakeabt.png')
+        img = gtk.gdk.pixbuf_new_from_file(ipath)
+        self.get_widget('aboutdialog').set_property('logo', img)
+
 
 class PrefsDialog(SimpleGladeApp):
     def __init__(self, guakeinstance):
-        super(PrefsDialog, self).__init__(common.datapath('prefs.glade'),
+        super(PrefsDialog, self).__init__(common.gladefile('prefs.glade'),
                 root='config-window')
 
         self.guake = guakeinstance
         self.client = gconf.client_get_default()
+
+        # images
+        ipath = common.pixmapfile('guakeabt.png')
+        self.get_widget('image_logo').set_from_file(ipath)
+        ipath = common.pixmapfile('tabdown.svg')
+        self.get_widget('image1').set_from_file(ipath)
+        ipath = common.pixmapfile('tabup.svg')
+        self.get_widget('image2').set_from_file(ipath)
+
         # the first position in tree will store the keybinding path in gconf,
         # and the user doesn't worry with this, lest hide that =D
         model = gtk.TreeStore(str, str, str, bool)
@@ -100,6 +113,7 @@ class PrefsDialog(SimpleGladeApp):
         
     def show(self):
         self.get_widget('config-window').show_all()
+
     def hide(self):
         self.get_widget('config-window').hide()
         
@@ -275,8 +289,9 @@ class PrefsDialog(SimpleGladeApp):
 
 class Guake(SimpleGladeApp):
     def __init__(self):
-        super(Guake, self).__init__(common.datapath('guake.glade'))
+        super(Guake, self).__init__(common.gladefile('guake.glade'))
         self.client = gconf.client_get_default()
+
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
@@ -287,6 +302,12 @@ class Guake(SimpleGladeApp):
         tray_icon.connect('popup-menu', self.show_menu)
         tray_icon.connect('activate', self.show_hide)
         tray_icon.show_all()
+
+        # adding images from a different path.
+        ipath = common.pixmapfile('new_guakelogo.png')
+        self.get_widget('image1').set_from_file(ipath)
+        ipath = common.pixmapfile('addTerm.svg')
+        self.get_widget('image2').set_from_file(ipath)
 
         self.window = self.get_widget('window-root')
         self.notebook = self.get_widget('notebook-teminals')
@@ -441,10 +462,11 @@ class Guake(SimpleGladeApp):
             self.notebook.set_show_tabs(False)
         else:
             self.notebook.set_show_tabs(True)
-    def stretch(self,percent,shownow=False):  
+
+    def stretch(self,percent,shownow=False):
         self.getScreenSize()
-        self.divisionFactor=int((self.desiredHeight*percent)/100)
-        self.multiplyFactor=int(100)
+        self.divisionFactor = int((self.desiredHeight*percent) / 100)
+        self.multiplyFactor = 100
         self.window.set_size_request(self.desiredWidth,1)
         if percent==1:
             self.fullscreen=True    
@@ -452,8 +474,10 @@ class Guake(SimpleGladeApp):
             self.fullscreen=False
         while self.divisionFactor < 3:
             self.setAnimationProportions(percent+0.1)
-        if shownow==True:
-            self.animateShow()    # -- format functions --
+        if shownow:
+            self.animateShow()
+
+    # -- format functions --
 
     def set_bgcolor(self):
         color = self.client.get_string(GCONF_PATH+'style/background/color')
@@ -532,7 +556,7 @@ class Guake(SimpleGladeApp):
                 directory=os.path.expanduser('~'))
 
         image = gtk.Image()
-        image.set_from_file(common.datapath('close.svg'))
+        image.set_from_file(common.pixmapfile('close.svg'))
         
         label = gtk.Label('Terminal %s' % (LastPos+1))
         label.connect('button-press-event', self.setTerminalFocus)
@@ -608,6 +632,7 @@ def main():
     if options.quit:
         # go away!
         pass
+
 
 if __name__ == '__main__':
     main()
