@@ -17,10 +17,17 @@ DEPENDENCIES
 
 INSTALLATION
 ~~~~~~~~~~~~
-To install guake use the setup.py script. You can use the following command
-to do this::
+We are using an autotools based installation, so if you got the source of
+guake from a release file, please do the following::
 
-    $ python setup.py install
+    $ gunzip -c guake-x.x.x.tar.gz | tar x
+    $ cd guake-x.x.x
+    $ ./configure && make
+    $ su
+    (give the root password here!)
+    # make install
+
+For more install details, please read the `INSTALL` file.
 
 
 PACKAGERS
