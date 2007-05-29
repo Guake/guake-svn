@@ -321,14 +321,21 @@ class Guake(SimpleGladeApp):
 
         self.getScreenSize()
         self.visible = False
-        self.addTerm()
+        #self.show()
+        #self.addTerm()
         self.load_config()
-        """
+        self.refresh()
+        self.addTerm()
+    def refresh(self):
+        import gc
         _weakDialog = PrefsDialog(self)
         _weakDialog.hide()        
         _weakDialog.load_configs()
         del(_weakDialog)
-        """
+        gc.collect()
+        #vte.Terminal need to be showed with his parent window to can load his configs of back/fore color, fonts, etc.
+        self.window.show_all()
+        self.window.hide()        
     def show_menu(self, *args):
         menu = self.get_widget('tray-menu')
         menu.popup(None, None, None, 3, gtk.get_current_event_time())
@@ -337,6 +344,7 @@ class Guake(SimpleGladeApp):
         screen = self.window.get_screen()
         w, h = screen.get_width(), screen.get_height()
         if not self.visible:
+            self.refresh()
             self.show(w, h)
             self.setTerminalFocus()
         else:
@@ -547,7 +555,7 @@ class Guake(SimpleGladeApp):
         LastPos = self.notebook.get_n_pages()
         self.term_list.append(vte.Terminal())
 
-        self.term_list[LastPos].show()
+
         self.term_list[LastPos].set_emulation('xterm')
 
         # TODO: make new terminal opens in the same dir of the already in use.
@@ -572,6 +580,8 @@ class Guake(SimpleGladeApp):
         hbox.pack_start(button)
         hbox.show_all()
 
+        self.term_list[LastPos].set_audible_bell(False)#without boring beep
+        self.term_list[LastPos].set_visible_bell(False)#without visible beep
         self.term_list[LastPos].set_flags(gtk.CAN_DEFAULT)
         self.term_list[LastPos].set_flags(gtk.CAN_FOCUS)
         self.term_list[LastPos].connect('child-exited',
@@ -584,7 +594,7 @@ class Guake(SimpleGladeApp):
         self.notebook.connect('select-page',self.setTerminalFocus)
         self.determineTabsVisibility()
         self.load_config()
-
+        self.term_list[LastPos].show()
     def setTerminalFocus(self, *args):
         self.term_list[-1].grab_focus()
 
