@@ -31,10 +31,6 @@ class DaemonDBus(dbus.service.Object):
         self.guake = guakeinstance
         object_path = '/DBus'
         super(DaemonDBus, self).__init__(bus_name, object_path)
-        
-    @dbus.service.method('org.gnome.Guake.DBus')
-    def quit(self):
-        self.guake.quit()
 
     @dbus.service.method('org.gnome.Guake.DBus')
     def show_hide(self):
@@ -55,6 +51,7 @@ class DaemonDBus(dbus.service.Object):
     @dbus.service.method('org.gnome.Guake.DBus')
     def quit(self):
         self.guake.quit()
+
 
 def dbus_init(guakeinstance):
     try:
