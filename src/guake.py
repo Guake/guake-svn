@@ -589,12 +589,13 @@ class Guake(SimpleGladeApp):
         self.term_list[LastPos].grab_focus()
         
         self.notebook.append_page(self.term_list[LastPos], hbox)
-        self.notebook.set_current_page(LastPos)
+        
         self.notebook.connect('focus-tab',self.setTerminalFocus)
         self.notebook.connect('select-page',self.setTerminalFocus)
         self.determineTabsVisibility()
         self.load_config()
         self.term_list[LastPos].show()
+        self.notebook.set_current_page(LastPos)
     def setTerminalFocus(self, *args):
         self.term_list[-1].grab_focus()
 
