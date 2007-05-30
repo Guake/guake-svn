@@ -3,7 +3,9 @@ Guake Todo
 
  * Finish Preferences window
 
- * Pynotify can be used to notify when guake is opened
+ * Pynotify
+    can be used to notify when guake is opened
+    to show all errors
 
  * Talk about egg.trayicon existance in this project =D
 
@@ -19,12 +21,11 @@ Guake Todo
 		...
 		# Ctrl-Super-0 -> set to 100% of window
 
- * Use pynotify to show all errors
-
- * Create or install a default schema to gconf to keep out configuration errors
-
  * Show error when keybind fails
  
  * Maybe convert all svg images to png, we needn't vetorial
    graphics at this moment =D (but is important to store the
    svg `source files' to edit them later)
+
+ * Create or install a default schema to gconf to keep out configuration errors
+   already done, must be included on installation script...

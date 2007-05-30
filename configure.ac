@@ -50,6 +50,8 @@ AC_SUBST([DEPENDENCIES_LIBS])
 
 dnl expanding useful variables
 AS_AC_EXPAND(LIBDIR, ${libdir})
+AS_AC_EXPAND(BINDIR, ${bindir})
+AS_AC_EXPAND(DATADIR, ${datarootdir})
 
 dnl gconf
 AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
@@ -71,6 +73,8 @@ dnl output files
 AC_CONFIG_FILES([
     Makefile
     data/Makefile
+    data/guake.desktop
+    data/org.gnome.Guake.service
     po/Makefile.in
     src/Makefile
     src/globalhotkeys/Makefile
