@@ -24,6 +24,7 @@ pixmaps_DATA = \
 	statusicon_over.png \
 	up_in.svg \
 	addTerm.svg \
+	add_tab.svg \
 	down_normal.svg \
 	guakelogo.svg \
 	littleguakelogo.png \
