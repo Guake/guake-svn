@@ -29,26 +29,26 @@ dbus.glib.threads_init()
 class DaemonDBus(dbus.service.Object):
     def __init__(self, bus_name, guakeinstance):
         self.guake = guakeinstance
-        object_path = '/DBus'
+        object_path = '/DBusInterface'
         super(DaemonDBus, self).__init__(bus_name, object_path)
 
-    @dbus.service.method('org.gnome.Guake.DBus')
+    @dbus.service.method('org.gnome.Guake.DBusInterface')
     def show_hide(self):
         self.guake.show_hide()
 
-    @dbus.service.method('org.gnome.Guake.DBus')
+    @dbus.service.method('org.gnome.Guake.DBusInterface')
     def add_tab(self):
-        self.guake.addTerm()
+        self.guake.add_tab()
 
-    @dbus.service.method('org.gnome.Guake.DBus')
+    @dbus.service.method('org.gnome.Guake.DBusInterface')
     def show_about(self):
-        self.guake.showAbout()
+        self.guake.show_about()
 
-    @dbus.service.method('org.gnome.Guake.DBus')
+    @dbus.service.method('org.gnome.Guake.DBusInterface')
     def show_prefs(self):
-        self.guake.showPrefs()
+        self.guake.show_prefs()
 
-    @dbus.service.method('org.gnome.Guake.DBus')
+    @dbus.service.method('org.gnome.Guake.DBusInterface')
     def quit(self):
         self.guake.quit()
 
@@ -59,5 +59,7 @@ def dbus_init(guakeinstance):
         name = dbus.service.BusName('org.gnome.Guake.DBus', bus=session_bus)
         return DaemonDBus(name, guakeinstance)
     except dbus.DBusException:
-        print('Could not connect to dbus session bus. dbus will be unavailable.')
+        import sys
+        sys.stderr.write(_('Could not connect to dbus session bus.'
+            ' dbus will be unavailable.\n'))
         return None

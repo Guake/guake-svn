@@ -306,7 +306,7 @@ class Guake(SimpleGladeApp):
         # adding images from a different path.
         ipath = common.pixmapfile('new_guakelogo.png')
         self.get_widget('image1').set_from_file(ipath)
-        ipath = common.pixmapfile('addTerm.svg')
+        ipath = common.pixmapfile('add_tab.svg')
         self.get_widget('image2').set_from_file(ipath)
 
         self.window = self.get_widget('window-root')
@@ -321,24 +321,28 @@ class Guake(SimpleGladeApp):
 
         self.getScreenSize()
         self.visible = False
-        #self.show()
-        #self.addTerm()
         self.load_config()
         self.refresh()
-        self.addTerm()
+        self.add_tab()
+
     def refresh(self):
         import gc
         _weakDialog = PrefsDialog(self)
-        _weakDialog.hide()        
+        _weakDialog.hide()
         _weakDialog.load_configs()
-        del(_weakDialog)
+        del _weakDialog
         gc.collect()
-        #vte.Terminal need to be showed with his parent window to can load his configs of back/fore color, fonts, etc.
+
+        # FIXME: vte.Terminal need to be showed with his parent window to
+        # can load his configs of back/fore color, fonts, etc.
         self.window.show_all()
-        self.window.hide()        
+        self.window.hide()
+
     def show_menu(self, *args):
         menu = self.get_widget('tray-menu')
         menu.popup(None, None, None, 3, gtk.get_current_event_time())
+
+    # -- extra methods and methods called by dbus interface --
 
     def show_hide(self, *args):
         screen = self.window.get_screen()
@@ -349,6 +353,12 @@ class Guake(SimpleGladeApp):
             self.setTerminalFocus()
         else:
             self.hide()
+
+    def show_about(self):
+        AboutDialog()
+
+    def show_prefs(self):
+        PrefsDialog(self).show()
 
     def show(self, wwidth, hheight):
         self.getScreenSize()
@@ -363,7 +373,7 @@ class Guake(SimpleGladeApp):
         self.window.set_resizable(True)
         self.animateShow()
         if not self.term_list:
-            self.addTerm()
+            self.add_tab()
 
     def hide(self):
         self.animateHide()
@@ -540,7 +550,7 @@ class Guake(SimpleGladeApp):
         AboutDialog()
 
     def on_add_button_clicked(self, *args):
-        self.addTerm()
+        self.add_tab()
 
     def on_terminal_exited(self, widget):
         self.deletePage(self.notebook.page_num(widget))
@@ -551,7 +561,7 @@ class Guake(SimpleGladeApp):
 
     # -- misc functions --
 
-    def addTerm(self):
+    def add_tab(self):
         LastPos = self.notebook.get_n_pages()
         self.term_list.append(vte.Terminal())
 
@@ -580,8 +590,10 @@ class Guake(SimpleGladeApp):
         hbox.pack_start(button)
         hbox.show_all()
 
-        self.term_list[LastPos].set_audible_bell(False)#without boring beep
-        self.term_list[LastPos].set_visible_bell(False)#without visible beep
+        # TODO: maybe the better way is give these choices to the user...
+        self.term_list[LastPos].set_audible_bell(False) # without boring beep
+        self.term_list[LastPos].set_visible_bell(False) # without visible beep
+
         self.term_list[LastPos].set_flags(gtk.CAN_DEFAULT)
         self.term_list[LastPos].set_flags(gtk.CAN_FOCUS)
         self.term_list[LastPos].connect('child-exited',
@@ -596,6 +608,7 @@ class Guake(SimpleGladeApp):
         self.load_config()
         self.term_list[LastPos].show()
         self.notebook.set_current_page(LastPos)
+
     def setTerminalFocus(self, *args):
         self.term_list[-1].grab_focus()
 
@@ -630,7 +643,7 @@ def main():
 
     bus = dbus.SessionBus()
     try:
-        remote_object = bus.get_object('org.gnome.Guake.DBus', '/DBus')
+        remote_object = bus.get_object('org.gnome.Guake.DBus', '/DBusInterface')
     except dbus.DBusException:
         return
 
