@@ -3,6 +3,23 @@ Guake
 
 2007-05-30 Lincoln de Sousa <lincoln@archlinux-br.org>
 
+	* src/guake.in: Became a shell script, to avoid problems with dbus.
+
+	* src/guake.py: Code cleanup and adding methods that will be called by
+	dbus. Renamed method addTerm to add_tab. Changed dbus object name.
+
+	* src/dbusiface.py: Changed name of object from DBus to DBusInterface, and
+	changed the way to inform user that dbus will not be available.
+
+	* data/add_tab.svg: Added -- This is a copy of addTerm.svg and was copied
+	only because addTerm method has its name changed in guake.py file,
+	addTerm.svg still in data dir and will only be removed when we do the
+	cleanup in image file names.
+
+	* data/Makefile.am: Added add_tab.svg file in data dir.
+
+2007-05-30 Lincoln de Sousa <lincoln@archlinux-br.org>
+
 	* autogen.sh: Sending all parameters from this to gnome-autogen.sh.
 
 	* configure.ac: Adding more two expanded variables (BINDIR and DATADIR) and
