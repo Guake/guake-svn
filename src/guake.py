@@ -328,7 +328,6 @@ class Guake(SimpleGladeApp):
     def refresh(self):
         import gc
         _weakDialog = PrefsDialog(self)
-        _weakDialog.hide()
         _weakDialog.load_configs()
         del _weakDialog
         gc.collect()
@@ -344,6 +343,12 @@ class Guake(SimpleGladeApp):
 
     # -- extra methods and methods called by dbus interface --
 
+    def show_about(self):
+        AboutDialog()
+
+    def show_prefs(self):
+        PrefsDialog(self).show()
+
     def show_hide(self, *args):
         screen = self.window.get_screen()
         w, h = screen.get_width(), screen.get_height()
@@ -354,16 +359,9 @@ class Guake(SimpleGladeApp):
         else:
             self.hide()
 
-    def show_about(self):
-        AboutDialog()
-
-    def show_prefs(self):
-        PrefsDialog(self).show()
-
     def show(self, wwidth, hheight):
         self.getScreenSize()
         self.window.set_position(gtk.WIN_POS_NONE)
-        
         self.window.set_gravity(gtk.gdk.GRAVITY_NORTH)
         self.window.move(0, 0)
         self.visible = True
@@ -397,14 +395,10 @@ class Guake(SimpleGladeApp):
         except:
             self.use_animation =True
 
-        proportion=float(self.configs.general.height)
-        self.setAnimationProportions(proportion,100)
-        self.ON_TOP=bool(self.configs.terminal.ontop)
+        proportion = float(self.configs.general.height)
+        self.setAnimationProportions(proportion, 100)
+        self.ON_TOP = bool(self.configs.terminal.ontop)
 
-    def setDefaultSize(self,userWidth,userHeight):
-        self.desiredWidth=userWidth
-        self.desiredHeight=userHeight
-        
     def setOnTop(self,bool_value):
         self.ON_TOP=bool_value
         self.window.set_keep_above(bool(bool_value))
@@ -419,10 +413,7 @@ class Guake(SimpleGladeApp):
         self.multiplyFactor=int(calcValue)
         self.window.set_size_request(self.desiredWidth, 1)
 
-        if percent==1:
-            self.fullscreen = True
-        else:
-            self.fullscreen = False
+        self.fullscreen = percent == 1
 
         while self.divisionFactor < 3:
             self.setAnimationProportions(percent + 0.1)
@@ -448,17 +439,18 @@ class Guake(SimpleGladeApp):
 
             if self.fullscreen:
                 self.getScreenSize()
-                self.resize(self.desiredWidth,int(self.height))
+                self.resize(self.desiredWidth, int(self.height))
                 utils.updateUI()
         else:
-            self.resize(self.desiredWidth,int(self.divisionFactor)*self.multiplyFactor)
+            self.resize(self.desiredWidth,
+                    int(self.divisionFactor) * self.multiplyFactor)
 
     def animateHide(self,*args):
-        if self.use_animation==True:
+        if self.use_animation:
             l = range(1, int(self.divisionFactor))
-            if self.fullscreen==True:
+            if self.fullscreen:
                 self.getScreenSize()
-                self.resize(self.desiredWidth,self.height)
+                self.resize(self.desiredWidth, self.height)
             else:
                 self.resize(self.desiredWidth, l[-1])
                 
@@ -469,13 +461,10 @@ class Guake(SimpleGladeApp):
     def getScreenSize(self):
         self.height = self.window.get_screen().get_height()
         self.width = self.window.get_screen().get_width()
-        self.setDefaultSize(self.width,self.height)
+        self.desiredWidth = self.width
+        self.desiredHeight = self.height
 
-    def setDefaultSize(self,userWidth,userHeight):
-        self.desiredWidth=userWidth
-        self.desiredHeight=userHeight
-        
-    def determineTabsVisibility(self):
+    def set_tabs_visible(self):
         if self.notebook.get_n_pages() == 1:
             self.notebook.set_show_tabs(False)
         else:
@@ -553,10 +542,10 @@ class Guake(SimpleGladeApp):
         self.add_tab()
 
     def on_terminal_exited(self, widget):
-        self.deletePage(self.notebook.page_num(widget))
+        self.delete_page(self.notebook.page_num(widget))
 
     def on_close_button_close_clicked(self, widget, index):
-        self.deletePage(self.notebook.page_num(self.term_list[index]))
+        self.delete_page(self.notebook.page_num(self.term_list[index]))
         self.setTerminalFocus()
 
     # -- misc functions --
@@ -604,7 +593,7 @@ class Guake(SimpleGladeApp):
         
         self.notebook.connect('focus-tab',self.setTerminalFocus)
         self.notebook.connect('select-page',self.setTerminalFocus)
-        self.determineTabsVisibility()
+        self.set_tabs_visible()
         self.load_config()
         self.term_list[LastPos].show()
         self.notebook.set_current_page(LastPos)
@@ -612,10 +601,10 @@ class Guake(SimpleGladeApp):
     def setTerminalFocus(self, *args):
         self.term_list[-1].grab_focus()
 
-    def deletePage(self, pagepos):
+    def delete_page(self, pagepos):
         self.term_list.pop(pagepos)
         self.notebook.remove_page(pagepos)
-        self.determineTabsVisibility()
+        self.set_tabs_visible()
         if not self.term_list:
             self.hide()
 

@@ -1,6 +1,11 @@
 Guake
 =====
 
+2007-06-01 Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* src/guake.py: Code cleanup, renaming some methods, to remove the
+	mixedCase style and use the underscore_separated style.
+
 2007-05-30 Lincoln de Sousa <lincoln@archlinux-br.org>
 
 	* src/guake.in: Became a shell script, to avoid problems with dbus.
