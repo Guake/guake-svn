@@ -1,6 +1,10 @@
 Guake
 =====
 
+2007-06-03  Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* src/guakeApplet.py: Removed.
+
 2007-06-01  Lincoln de Sousa <lincoln@archlinux-br.org>
 
 	* src/guake.py: Code cleanup, renaming some methods, to remove the
