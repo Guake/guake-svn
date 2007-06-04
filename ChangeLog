@@ -5,6 +5,9 @@ Guake
 
 	* src/guakeApplet.py: Removed.
 
+	* TODO: Added more issues, this will be our standard roadmap before
+	using a tracker =)
+
 2007-06-01  Lincoln de Sousa <lincoln@archlinux-br.org>
 
 	* src/guake.py: Code cleanup, renaming some methods, to remove the

@@ -1,15 +1,36 @@
 Guake Todo
 ==========
 
+ * Code cleanup (Lincoln)
+
+ * Cleanup image names and maybe create a directory for them
+
+ * Maybe convert all svg images to png, we needn't vetorial
+   graphics at this moment =D (but is important to store the
+   svg `source files' to edit them later)
+
  * Finish Preferences window
+
+ * Make translation works (Lincoln)
+
+ * Bug hunting =)
+
+    - Guake is appearing on the task list.
+
+    - Guake window must hide when lose focus.
+
+    - Some times, when guake opens, it does not grabs the focus.
+
+    - When guake is hidden/shown the cursor is appearing on bottom without any
+      reason.
+
+ * Release the first alpha version
 
  * Pynotify
     can be used to notify when guake is opened
     to show all errors
 
- * Talk about egg.trayicon existance in this project =D
-
- * Cleanup image names and maybe create a directory for them
+ * Show error when keybind fails
 
  * Maybe create a namespace to store all standard messages, specialy errors and warnings, and so, use gettext in them ! Obvious :) 
 
@@ -19,13 +40,20 @@ Guake Todo
 	# Set window size, here we will set only 10 default sizes:
 		# Ctrl-Super-1 -> set to 10% of window
 		...
-		# Ctrl-Super-0 -> set to 100% of window
+		# Ctrl-Super-0 -> set to 100% of window 
 
- * Show error when keybind fails
- 
- * Maybe convert all svg images to png, we needn't vetorial
-   graphics at this moment =D (but is important to store the
-   svg `source files' to edit them later)
+ * Add to preferences window:
 
- * Create or install a default schema to gconf to keep out configuration errors
-   already done, must be included on installation script...
+   - History size
+
+   - Visual bell
+
+   - Audio bell
+
+ * Bug hunting
+
+ * Release alpha2
+
+ * Release the first beta
+
+ * Release the stable version of Guake!!!
