@@ -35,6 +35,8 @@
 	adding more keys (keybindings/local/new_tab,
 	keybindings/local/previous_tab, keybindings/local/next_tab)
 
+	* data/add_tab.png: Added
+
 2007-06-03  Lincoln de Sousa <lincoln@archlinux-br.org>
 
 	* src/guakeApplet.py: Removed.
