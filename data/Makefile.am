@@ -23,8 +23,7 @@ pixmaps_DATA = \
 	right_in.svg \
 	statusicon_over.png \
 	up_in.svg \
-	addTerm.svg \
-	add_tab.svg \
+	add_tab.png \
 	down_normal.svg \
 	guakelogo.svg \
 	littleguakelogo.png \

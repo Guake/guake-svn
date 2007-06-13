@@ -22,6 +22,7 @@ import gtk, sys
 import os
 import locale
 import gettext
+import time
 import guake_globals
 
 # TODO: This should be a function and called in the main guake script.
@@ -62,3 +63,8 @@ def gladefile(x):
 def hexify_color(c):
     h = lambda x: hex(x).replace('0x', '').zfill(4)
     return '#%s%s%s' % (h(c.red), h(c.green), h(c.blue))
+
+def update_ui():
+    time.sleep(0.0000000000000001)
+    while gtk.events_pending():
+        gtk.main_iteration()

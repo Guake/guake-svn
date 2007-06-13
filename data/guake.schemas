@@ -44,7 +44,7 @@
             <key>/schemas/apps/guake/general/window_size</key>
             <applyto>/apps/guake/general/window_size</applyto>
             <owner>guake</owner>
-            <type>string</type>
+            <type>int</type>
             <default>50</default>
             <locale name="C">
                 <short>Window size.</short>
@@ -135,6 +135,42 @@
                 <short>Keybinding to show/hide guake.</short>
                 <long>Global keybinding to allow user call guake from each
                 place after it's opened without clicks.</long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/apps/guake/keybindings/local/new_tab</key>
+            <applyto>/apps/guake/keybindings/local/new_tab</applyto>
+            <owner>guake</owner>
+            <type>string</type>
+            <default>&lt;Control&gt;&lt;Shift&gt;t</default>
+            <locale name="C">
+                <short>Add a new tab.</short>
+                <long>Calls the function to add a new tab in guake window.</long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/apps/guake/keybindings/local/previous_tab</key>
+            <applyto>/apps/guake/keybindings/local/previous_tab</applyto>
+            <owner>guake</owner>
+            <type>string</type>
+            <default>&lt;Control&gt;Page_Up</default>
+            <locale name="C">
+                <short>Previous tab.</short>
+                <long>Shows the previous tab.</long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/apps/guake/keybindings/local/next_tab</key>
+            <applyto>/apps/guake/keybindings/local/next_tab</applyto>
+            <owner>guake</owner>
+            <type>string</type>
+            <default>&lt;Control&gt;Page_Down</default>
+            <locale name="C">
+                <short>Next tab.</short>
+                <long>Shows the next tab.</long>
             </locale>
         </schema>
 

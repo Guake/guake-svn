@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.1 on Sun May 27 13:29:16 2007 by pythonwarrior@pidinti-->
+<!--Generated with glade3 3.2.2 on Wed Jun  6 22:46:29 2007 by pythonwarrior@pidinti-->
 <glade-interface>
   <widget class="GtkWindow" id="config-window">
     <property name="width_request">460</property>
@@ -129,6 +129,7 @@
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">Animate on "show and hide"</property>
                                     <property name="focus_on_click">False</property>
+                                    <property name="response_id">0</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_animate_checkbutton_toggled"/>
@@ -142,6 +143,7 @@
                                     <property name="visible">True</property>
                                     <property name="label" translatable="yes">Stay on top</property>
                                     <property name="focus_on_click">False</property>
+                                    <property name="response_id">0</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_ontop_checkbutton_toggled"/>
@@ -186,8 +188,7 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="update_policy">GTK_UPDATE_DISCONTINUOUS</property>
                                 <property name="adjustment">50 10 110 10 10 10</property>
-                                <property name="digits">2</property>
-                                <property name="draw_value">False</property>
+                                <property name="digits">0</property>
                                 <property name="value_pos">GTK_POS_RIGHT</property>
                                 <signal name="value_changed" handler="on_winsize_hscale_value_changed"/>
                               </widget>
@@ -243,6 +244,7 @@
                                           <widget class="GtkRadioButton" id="tabbottom-radiobutton">
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Bottom</property>
+                                            <property name="response_id">0</property>
                                             <property name="active">True</property>
                                             <property name="draw_indicator">True</property>
                                             <signal name="toggled" handler="on_tabbottom_radiobutton_toggled"/>
@@ -271,6 +273,7 @@
                                           <widget class="GtkRadioButton" id="tabtop-radiobutton">
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Top</property>
+                                            <property name="response_id">0</property>
                                             <property name="active">True</property>
                                             <property name="draw_indicator">True</property>
                                             <property name="group">tabbottom-radiobutton</property>
@@ -365,6 +368,7 @@
                                       <widget class="GtkFontButton" id="fontbutton">
                                         <property name="visible">True</property>
                                         <property name="focus_on_click">False</property>
+                                        <property name="response_id">0</property>
                                         <property name="title" translatable="yes">Choose some font</property>
                                         <property name="font_name">Fixed 10</property>
                                         <signal name="font_set" handler="on_fontbutton_font_set"/>
@@ -398,6 +402,7 @@
                                     <child>
                                       <widget class="GtkColorButton" id="font-colorbutton">
                                         <property name="visible">True</property>
+                                        <property name="response_id">0</property>
                                         <property name="title" translatable="yes">Choose some color</property>
                                         <property name="color">#ffffffffffff</property>
                                         <signal name="color_set" handler="on_font_colorbutton_color_set"/>
@@ -465,6 +470,7 @@
                                     <child>
                                       <widget class="GtkColorButton" id="bg-colorbutton">
                                         <property name="visible">True</property>
+                                        <property name="response_id">0</property>
                                         <property name="title" translatable="yes">Choose some color</property>
                                         <property name="color">#000000000000</property>
                                         <signal name="color_set" handler="on_bg_colorbutton_color_set"/>
@@ -645,6 +651,7 @@
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label">gtk-close</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
                 <signal name="clicked" handler="gtk_widget_destroy" object="config-window"/>
               </widget>
             </child>

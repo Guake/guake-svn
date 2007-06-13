@@ -1,5 +1,39 @@
-Guake
-=====
+2007-06-13  Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* src/common.py: Adding update_ui function (moved from utils.py)
+
+	* src/guake.py: Changing window_size from string to int, renaming
+	add_tab.svg to add_tab.png, adding keyboard bindings to add a new tab and
+	walk through tabs.
+	
+	* src/guake.py (Guake): Renaming setTerminalFocus to set_terminal_focus,
+	animateHide to animate_hide, animateShow to animate_show, delete_page to
+	delete_tab. Adding load_accelerators.
+	Removing setOnTop, setAnimationProportions, getScreenSize.
+
+	* src/guake.py (Guake.refresh): Removed PrefsDialog instantiation, that was
+	unecessary.
+
+	* src/guake.py (Guake.load_configs): Removing too many unecessary code,
+	removing references from removed utils module.
+
+	* src/main.py,
+	* src/utils.py: Removed.
+
+	* src/Makefile.am: Removing references of main.py, utils.py and
+	guakeApplets.py.
+
+	* data/guake.glade: Adding more configuration of main window to glade file
+	and removing that from python code.
+
+	* data/Makefile.am: Removing references from add_tab.svg and addTerm.svg
+	and adding reference to add_tab.png.
+
+	* data/add_tab.svg: Resising the image.
+
+	* data/guake.schemas: Changing window_size type from string to int and
+	adding more keys (keybindings/local/new_tab,
+	keybindings/local/previous_tab, keybindings/local/next_tab)
 
 2007-06-03  Lincoln de Sousa <lincoln@archlinux-br.org>
 

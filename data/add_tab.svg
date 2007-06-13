@@ -13,12 +13,14 @@
    height="24"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
+   inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docname="addTerm.svg"
-   sodipodi:docbase="/home/gabriel/Desktop/pyTerm"
+   sodipodi:docname="add_tab.svg"
+   sodipodi:docbase="/home/pythonwarrior/work/guake/svn/trunk/data"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="true">
+   inkscape:export-filename="/home/pythonwarrior/work/guake/svn/trunk/data/add_tab.png"
+   inkscape:export-xdpi="59.999996"
+   inkscape:export-ydpi="59.999996">
   <defs
      id="defs4">
     <radialGradient
@@ -3816,9 +3818,9 @@
      width="24px"
      height="24px"
      inkscape:window-width="1280"
-     inkscape:window-height="950"
+     inkscape:window-height="750"
      inkscape:window-x="0"
-     inkscape:window-y="24" />
+     inkscape:window-y="25" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -3837,7 +3839,9 @@
      transform="translate(-225.18891,-403.90781)">
     <g
        id="g6124"
-       transform="matrix(0.5322533,0,0,0.5322533,105.33137,187.85392)">
+       transform="matrix(0.5322533,0,0,0.5322533,105.33137,187.85392)"
+       inkscape:export-xdpi="98.135529"
+       inkscape:export-ydpi="98.135529">
       <g
          transform="matrix(0.8398631,0,0,0.8398631,225.69786,410.47645)"
          id="g2283"

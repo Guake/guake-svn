@@ -7,10 +7,7 @@ guakelibdir = $(libdir)/guake
 guakelib_DATA = \
 	dialogs.py \
 	guake.py \
-	main.py \
-	utils.py \
 	common.py \
-	guakeApplet.py \
 	simplegladeapp.py \
 	dbusiface.py \
 	statusicon.py \

@@ -31,8 +31,6 @@ import dbus
 
 import os
 import sys
-os.chdir(os.path.dirname(os.path.abspath(__file__))) #tosco :)
-import utils
 import common
 from common import _
 from simplegladeapp import SimpleGladeApp
@@ -138,7 +136,7 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('ontop-checkbutton').set_active(ac)
 
         # winsize
-        val = float(self.client.get_string(GCONF_PATH + 'general/window_size'))
+        val = float(self.client.get_int(GCONF_PATH + 'general/window_size'))
         self.get_widget('winsize-hscale').set_value(val)
 
         # tab pos
@@ -238,9 +236,8 @@ class PrefsDialog(SimpleGladeApp):
 
     def on_winsize_hscale_value_changed(self, hscale):
         val = hscale.get_value()
-        self.client.set_string(GCONF_PATH + 'general/window_size', str(val))
-        proportion=float(val)/100
-        self.guake.stretch(proportion,True)
+        self.client.set_int(GCONF_PATH + 'general/window_size', int(val))
+        self.guake.resize(*self.guake.get_final_window_size())
 
     def on_tabbottom_radiobutton_toggled(self, bnt):
         st = bnt.get_active() and 'bottom' or 'top'
@@ -284,7 +281,15 @@ class PrefsDialog(SimpleGladeApp):
         giter = model.get_iter(path)
         gconf_path = model.get_value(giter, 0)
         model.set(giter, 2, key)
+
+        # ungrabing key
+        accel = self.client.get_string(gconf_path)
+        keynum, mask = gtk.accelerator_parse(accel)
+        self.guake.accel_group.disconnect_key(keynum, mask)
+
+        # setting the new value on gconf
         self.client.set_string(gconf_path, key)
+        self.guake.load_accelerators()
 
 
 class Guake(SimpleGladeApp):
@@ -295,7 +300,7 @@ class Guake(SimpleGladeApp):
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
-        globalhotkeys.bind(key or "F12", self.show_hide)
+        globalhotkeys.bind(key, self.show_hide)
 
         # trayicon!
         tray_icon = GuakeStatusIcon()
@@ -306,32 +311,30 @@ class Guake(SimpleGladeApp):
         # adding images from a different path.
         ipath = common.pixmapfile('new_guakelogo.png')
         self.get_widget('image1').set_from_file(ipath)
-        ipath = common.pixmapfile('add_tab.svg')
+        ipath = common.pixmapfile('add_tab.png')
         self.get_widget('image2').set_from_file(ipath)
 
         self.window = self.get_widget('window-root')
         self.notebook = self.get_widget('notebook-teminals')
         self.toolbar = self.get_widget('toolbar')
         self.mainframe = self.get_widget('mainframe')
-        
+
+        self.accel_group = gtk.AccelGroup()
+        self.last_pos = -1
+        self.term_list = []
+        self.animation_speed = 30
+        self.visible = False
+
+        self.window.add_accel_group(self.accel_group)
         self.window.set_keep_above(True)
         self.window.set_geometry_hints(min_width=1, min_height=1)
-        self.use_animation=True
-        self.term_list = []
 
-        self.getScreenSize()
-        self.visible = False
         self.load_config()
+        self.load_accelerators()
         self.refresh()
         self.add_tab()
 
     def refresh(self):
-        import gc
-        _weakDialog = PrefsDialog(self)
-        _weakDialog.load_configs()
-        del _weakDialog
-        gc.collect()
-
         # FIXME: vte.Terminal need to be showed with his parent window to
         # can load his configs of back/fore color, fonts, etc.
         self.window.show_all()
@@ -353,35 +356,29 @@ class Guake(SimpleGladeApp):
         screen = self.window.get_screen()
         w, h = screen.get_width(), screen.get_height()
         if not self.visible:
-            self.refresh()
             self.show(w, h)
-            self.setTerminalFocus()
+            self.set_terminal_focus()
         else:
             self.hide()
 
     def show(self, wwidth, hheight):
-        self.getScreenSize()
         self.window.set_position(gtk.WIN_POS_NONE)
         self.window.set_gravity(gtk.gdk.GRAVITY_NORTH)
-        self.window.move(0, 0)
         self.visible = True
+        self.window.move(0, 0)
         self.window.show_all()
         self.window.stick()
-        self.setOnTop(self.ON_TOP)
-        self.window.set_resizable(True)
-        self.animateShow()
+        self.animate_show()
         if not self.term_list:
             self.add_tab()
 
     def hide(self):
-        self.animateHide()
+        self.animate_hide()
         self.window.hide_all()
         self.window.unstick()
         self.visible = False
 
     def load_config(self):
-        self.configs = utils.prefs()
-
         self.set_fgcolor()
         self.set_font()
         self.set_bgcolor()
@@ -389,106 +386,62 @@ class Guake(SimpleGladeApp):
         self.set_alpha()
         self.set_tabpos()
 
-        self.fullscreen = False
-        try:
-            self.use_animation = bool(self.configs.general.animate)
-        except:
-            self.use_animation =True
+    def load_accelerators(self):
+        gets = lambda x:self.client.get_string(x)
+        ac = gets(GCONF_PATH+'keybindings/local/new_tab')
+        key, mask = gtk.accelerator_parse(ac)
+        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
+                lambda *x:self.add_tab())
 
-        proportion = float(self.configs.general.height)
-        self.setAnimationProportions(proportion, 100)
-        self.ON_TOP = bool(self.configs.terminal.ontop)
+        ac = gets(GCONF_PATH+'keybindings/local/previous_tab')
+        key, mask = gtk.accelerator_parse(ac)
+        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
+                lambda *x:self.notebook.prev_page())
 
-    def setOnTop(self,bool_value):
-        self.ON_TOP=bool_value
-        self.window.set_keep_above(bool(bool_value))
-        if bool_value:
-            self.window.stick()
+        ac = gets(GCONF_PATH+'keybindings/local/next_tab')
+        key, mask = gtk.accelerator_parse(ac)
+        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
+                lambda *x:self.notebook.next_page())
+
+    def resize(self, width, height):
+        self.window.resize(width, height)
+        self.window.set_default_size(width, height)
+
+    def animate_show(self, *args):
+        width, final_height = self.get_final_window_size()
+        if self.client.get_bool(GCONF_PATH+'general/window_animate'):
+            self.resize(width, 1)
+            for i in range(1, final_height, self.animation_speed):
+                self.resize(width, i)
+                common.update_ui()
         else:
-            self.window.unstick()
+            self.resize(width, final_height)
+            common.update_ui()
 
-    def setAnimationProportions(self, percent, calcValue=100, shownow=False):
-        self.getScreenSize()
-        self.divisionFactor=int((self.desiredHeight*percent)/calcValue)
-        self.multiplyFactor=int(calcValue)
-        self.window.set_size_request(self.desiredWidth, 1)
+    def animate_hide(self,*args):
+        if self.client.get_bool(GCONF_PATH+'general/window_animate'):
+            width, final_height = self.get_final_window_size()
+            l = range(1, final_height, self.animation_speed)
+            for i in reversed(l):
+                self.resize(width, i)
+                common.update_ui()
 
-        self.fullscreen = percent == 1
+    def get_window_size(self):
+        width = self.window.get_screen().get_width()
+        height = self.client.get_int(GCONF_PATH+'general/window_size')
+        return width, height
 
-        while self.divisionFactor < 3:
-            self.setAnimationProportions(percent + 0.1)
-
-        if shownow:
-            self.animateShow()
-
-    def resize(self, width,height):
-        self.getScreenSize()
-        self.window.set_resizable(True)
-        self.window.resize(width,height)
-        self.window.set_default_size(width,height)
-
-    def animateShow(self, *args):
-        if not self.use_animation:
-            self.use_animation = True
-
-        if self.use_animation:
-            self.resize(self.desiredWidth,1)
-            for i in range(1, int(self.divisionFactor)):
-                self.resize(self.desiredWidth, i * self.multiplyFactor)
-                utils.updateUI()
-
-            if self.fullscreen:
-                self.getScreenSize()
-                self.resize(self.desiredWidth, int(self.height))
-                utils.updateUI()
-        else:
-            self.resize(self.desiredWidth,
-                    int(self.divisionFactor) * self.multiplyFactor)
-
-    def animateHide(self,*args):
-        if self.use_animation:
-            l = range(1, int(self.divisionFactor))
-            if self.fullscreen:
-                self.getScreenSize()
-                self.resize(self.desiredWidth, self.height)
-            else:
-                self.resize(self.desiredWidth, l[-1])
-                
-            for giter in reversed(l):
-                self.resize(self.desiredWidth, giter*100)
-                utils.updateUI()
-
-    def getScreenSize(self):
-        self.height = self.window.get_screen().get_height()
-        self.width = self.window.get_screen().get_width()
-        self.desiredWidth = self.width
-        self.desiredHeight = self.height
-
-    def set_tabs_visible(self):
-        if self.notebook.get_n_pages() == 1:
-            self.notebook.set_show_tabs(False)
-        else:
-            self.notebook.set_show_tabs(True)
-
-    def stretch(self,percent,shownow=False):
-        self.getScreenSize()
-        self.divisionFactor = int((self.desiredHeight*percent) / 100)
-        self.multiplyFactor = 100
-        self.window.set_size_request(self.desiredWidth,1)
-        if percent==1:
-            self.fullscreen=True    
-        else:
-            self.fullscreen=False
-        while self.divisionFactor < 3:
-            self.setAnimationProportions(percent+0.1)
-        if shownow:
-            self.animateShow()
+    def get_final_window_size(self):
+        width, height = self.get_window_size()
+        total_height = self.window.get_screen().get_height()
+        final_height = total_height * height / 100
+        return width, final_height
 
     # -- format functions --
 
     def set_bgcolor(self):
         color = self.client.get_string(GCONF_PATH+'style/background/color')
-        bgcolor = gtk.gdk.color_parse(color or "#000000")
+        bgcolor = gtk.gdk.color_parse(color)
         for i in self.term_list:
             i.set_color_background(bgcolor)
             i.set_background_tint_color(bgcolor)
@@ -500,14 +453,13 @@ class Guake(SimpleGladeApp):
                 i.set_background_image_file(image)
 
     def set_fgcolor(self):
-        color = self.client.get_string(GCONF_PATH+'font/color')
-        fgcolor = gtk.gdk.color_parse(color or "#FFFFFF")
+        color = self.client.get_string(GCONF_PATH+'style/font/color')
+        fgcolor = gtk.gdk.color_parse(color)
         for i in self.term_list:
             i.set_color_dim(fgcolor)
             i.set_color_cursor(fgcolor)
             i.set_color_highlight(fgcolor)
             i.set_color_foreground(fgcolor)
-            i.show()
 
     def set_font(self):
         font_name = self.client.get_string(GCONF_PATH+'style/font/style')
@@ -542,36 +494,35 @@ class Guake(SimpleGladeApp):
         self.add_tab()
 
     def on_terminal_exited(self, widget):
-        self.delete_page(self.notebook.page_num(widget))
+        self.delete_tab(self.notebook.page_num(widget))
 
     def on_close_button_close_clicked(self, widget, index):
-        self.delete_page(self.notebook.page_num(self.term_list[index]))
-        self.setTerminalFocus()
+        self.delete_tab(self.notebook.page_num(self.term_list[index]))
+        self.set_terminal_focus()
 
-    # -- misc functions --
+    # -- tab related functions --
 
     def add_tab(self):
-        LastPos = self.notebook.get_n_pages()
+        last_added = len(self.term_list)
         self.term_list.append(vte.Terminal())
-
-
-        self.term_list[LastPos].set_emulation('xterm')
+        self.term_list[last_added].set_emulation('xterm')
 
         # TODO: make new terminal opens in the same dir of the already in use.
         shell_name = self.client.get_string(GCONF_PATH+'general/default_shell')
-        self.term_list[LastPos].fork_command(shell_name or "bash",
+        self.term_list[last_added].fork_command(shell_name or "bash",
                 directory=os.path.expanduser('~'))
 
         image = gtk.Image()
         image.set_from_file(common.pixmapfile('close.svg'))
         
-        label = gtk.Label('Terminal %s' % (LastPos+1))
-        label.connect('button-press-event', self.setTerminalFocus)
+        label = gtk.Label(_('Terminal %s') % (last_added+1))
+        label.connect('button-press-event', self.set_terminal_focus)
 
         button = gtk.Button()
         button.set_image(image)
         button.set_relief(gtk.RELIEF_NONE)
-        button.connect('clicked', self.on_close_button_close_clicked, LastPos)
+        button.connect('clicked', self.on_close_button_close_clicked,
+                self.last_pos)
 
         hbox = gtk.HBox(False, 0)
         hbox.set_border_width(1)
@@ -580,33 +531,44 @@ class Guake(SimpleGladeApp):
         hbox.show_all()
 
         # TODO: maybe the better way is give these choices to the user...
-        self.term_list[LastPos].set_audible_bell(False) # without boring beep
-        self.term_list[LastPos].set_visible_bell(False) # without visible beep
+        self.term_list[last_added].set_audible_bell(False) # without boring beep
+        self.term_list[last_added].set_visible_bell(False) # without visible beep
 
-        self.term_list[LastPos].set_flags(gtk.CAN_DEFAULT)
-        self.term_list[LastPos].set_flags(gtk.CAN_FOCUS)
-        self.term_list[LastPos].connect('child-exited',
+        self.term_list[last_added].set_flags(gtk.CAN_DEFAULT)
+        self.term_list[last_added].set_flags(gtk.CAN_FOCUS)
+        self.term_list[last_added].connect('child-exited',
                 self.on_terminal_exited)
-        self.term_list[LastPos].grab_focus()
-        
-        self.notebook.append_page(self.term_list[LastPos], hbox)
-        
-        self.notebook.connect('focus-tab',self.setTerminalFocus)
-        self.notebook.connect('select-page',self.setTerminalFocus)
+        self.term_list[last_added].grab_focus()
+        self.notebook.append_page(self.term_list[last_added], hbox)
+        self.notebook.connect('select-page', self.set_last_pos)
+        self.notebook.connect('switch-page', self.set_last_pos)
+        self.notebook.connect('focus-tab', self.set_terminal_focus)
+
         self.set_tabs_visible()
         self.load_config()
-        self.term_list[LastPos].show()
-        self.notebook.set_current_page(LastPos)
+        self.term_list[last_added].show()
+        self.notebook.set_current_page(last_added)
+        self.last_pos = last_added
 
-    def setTerminalFocus(self, *args):
-        self.term_list[-1].grab_focus()
-
-    def delete_page(self, pagepos):
+    def delete_tab(self, pagepos):
         self.term_list.pop(pagepos)
         self.notebook.remove_page(pagepos)
         self.set_tabs_visible()
         if not self.term_list:
             self.hide()
+
+    def set_terminal_focus(self):
+        self.notebook.set_current_page(self.last_pos)
+        self.term_list[self.last_pos].grab_focus()
+
+    def set_tabs_visible(self):
+        if self.notebook.get_n_pages() == 1:
+            self.notebook.set_show_tabs(False)
+        else:
+            self.notebook.set_show_tabs(True)
+
+    def set_last_pos(self, *args):
+        self.last_pos = self.notebook.get_current_page()
 
 
 def main():
