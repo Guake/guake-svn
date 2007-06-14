@@ -508,10 +508,11 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].set_emulation('xterm')
 
         # TODO: make new terminal opens in the same dir of the already in use.
+
         shell_name = self.client.get_string(GCONF_PATH+'general/default_shell')
         self.term_list[last_added].fork_command(shell_name or "bash",
                 directory=os.path.expanduser('~'))
-
+        
         image = gtk.Image()
         image.set_from_file(common.pixmapfile('close.svg'))
         
@@ -535,6 +536,7 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].set_visible_bell(False) # without visible beep
         self.term_list[last_added].set_scroll_on_output(True) # auto scroll
         self.term_list[last_added].set_scroll_on_keystroke(True) # auto scroll
+        self.term_list[last_added].set_scrollback_lines(10000) # history size
 
         self.term_list[last_added].set_flags(gtk.CAN_DEFAULT)
         self.term_list[last_added].set_flags(gtk.CAN_FOCUS)
