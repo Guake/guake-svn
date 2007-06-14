@@ -533,6 +533,8 @@ class Guake(SimpleGladeApp):
         # TODO: maybe the better way is give these choices to the user...
         self.term_list[last_added].set_audible_bell(False) # without boring beep
         self.term_list[last_added].set_visible_bell(False) # without visible beep
+        self.term_list[last_added].set_scroll_on_output(True) # auto scroll
+        self.term_list[last_added].set_scroll_on_keystroke(True) # auto scroll
 
         self.term_list[last_added].set_flags(gtk.CAN_DEFAULT)
         self.term_list[last_added].set_flags(gtk.CAN_FOCUS)
