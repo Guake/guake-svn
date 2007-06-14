@@ -1,7 +1,12 @@
-/* This code was original written by Alex Graveley for Tomboy 
-   (http://www.beatniksoftware.com/tomboy), which is also 
-   LGPL program. Thanks to him. */
-
+/*
+ * This code was original written by Alex Graveley for Tomboy 
+ * (http://www.beatniksoftware.com/tomboy), which is also 
+ * LGPL program. Thanks to him.
+ *
+ *  - 14/05/2007 - Lincoln de Sousa <lincoln@archlinux-br.org>
+ *
+ *    changing keybinder_bind return type from void to gboolean.
+ */
 
 #include <gdk/gdk.h>
 #include <gdk/gdkwindow.h>
@@ -238,7 +243,7 @@ keybinder_init (void)
 			  NULL);
 }
 
-void 
+gboolean
 keybinder_bind (const char           *keystring,
 		       BindkeyHandler  handler,
 		       gpointer              user_data)
@@ -256,9 +261,11 @@ keybinder_bind (const char           *keystring,
 
 	if (success) {
 		bindings = g_slist_prepend (bindings, binding);
+                return TRUE;
 	} else {
 		g_free (binding->keystring);
 		g_free (binding);
+                return FALSE;
 	}
 }
 

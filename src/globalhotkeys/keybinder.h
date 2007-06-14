@@ -10,7 +10,7 @@ typedef void (* BindkeyHandler) (char *keystring, gpointer user_data);
 
 void keybinder_init   (void);
 
-void keybinder_bind   (const char           *keystring,
+gboolean keybinder_bind   (const char           *keystring,
 			      BindkeyHandler  handler,
 			      gpointer              user_data);
 

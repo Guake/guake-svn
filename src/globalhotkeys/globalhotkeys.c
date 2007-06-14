@@ -31,7 +31,7 @@ struct _CallableObject
   PyObject *params;
 };
 
-void
+static void
 caller (char *key, gpointer userdata)
 {
   PyObject *retval;
@@ -82,19 +82,15 @@ _wrapped_keybinder_bind (PyObject *self, PyObject *args)
 
   if (PyCallable_Check (co->callback))
     {
-      /* TODO: provide a way to say to the user when it doesn't
-       * binds the key. For example when the key is already binded...
-       */
-      keybinder_bind (key, caller, co);
-    }
-  else
-    {
-      PyErr_SetString(PyExc_TypeError, "First param must be callable.");
-      Py_DECREF (extra);
-      return FALSE;
+      if (keybinder_bind (key, caller, co))
+        return Py_BuildValue ("i", TRUE);
+      else
+        return Py_BuildValue ("i", FALSE);
     }
 
-  return Py_BuildValue ("");
+  PyErr_SetString (PyExc_TypeError, "First param must be callable.");
+  Py_DECREF (extra);
+  return FALSE;
 }
 
 static PyObject *

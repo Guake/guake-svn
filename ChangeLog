@@ -1,3 +1,15 @@
+2007-06-14  Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* src/globalhotkeys/example.py: Added
+
+	* src/globalhotkeys/keybinder.c,
+	* src/globalhotkeys/keybinder.h: Changing return type of keybinder_bind
+	from void to gboolean.
+
+	* src/globalhotkeys/globalhotkeys.c: Making _wrapped_keybinder_bind returns
+	bool python values depending on binding works properly.
+
+
 2007-06-13  Lincoln de Sousa <lincoln@archlinux-br.org>
 
 	* src/common.py: Adding update_ui function (moved from utils.py)
