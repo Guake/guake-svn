@@ -15,6 +15,19 @@
         </schema>
 
         <schema>
+            <key>/schemas/apps/guake/general/use_bgimage</key>
+            <applyto>/apps/guake/general/use_bgimage</applyto>
+            <owner>guake</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Set if bg is image or transparent.</short>
+                <long>If true the bg style will be the chosen image
+                    otherway the bg will be transparent</long>
+            </locale>
+        </schema>
+        
+        <schema>
             <key>/schemas/apps/guake/general/window_animate</key>
             <applyto>/apps/guake/general/window_animate</applyto>
             <owner>guake</owner>

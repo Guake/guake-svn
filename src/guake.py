@@ -108,7 +108,12 @@ class PrefsDialog(SimpleGladeApp):
         self.populate_keys_tree()
         self.load_configs()
         self.get_widget('config-window').hide()
-        
+        #Preview when selecting a bgimage
+        self.selection_preview = gtk.Image()
+        self.bgfilechooser = self.get_widget('bgimage-filechooserbutton')
+        self.bgfilechooser.set_preview_widget(self.selection_preview)
+        self.bgfilechooser.connect("update-preview", self.update_preview_cb, self.selection_preview)
+
     def show(self):
         self.get_widget('config-window').show_all()
 
@@ -117,7 +122,7 @@ class PrefsDialog(SimpleGladeApp):
         
     def load_configs(self):
         # getting values from gconf
-
+        
         # shells list
         default = self.client.get_string(GCONF_PATH + 'general/default_shell')
         combo = self.get_widget('shells-combobox')
@@ -166,12 +171,17 @@ class PrefsDialog(SimpleGladeApp):
         except (ValueError, TypeError):
             # unable to parse color
             pass
-
+            
+        self.guake.use_bgimage = self.client.get_bool(GCONF_PATH+'general/use_bgimage')
+        self.get_widget('chk_bg_transparent').set_active(not self.guake.use_bgimage)
+        self.get_widget('chk_bg_transparent').connect('toggled', self.on_chk_bg_transparent_toggled)
+        
         val = self.client.get_string(GCONF_PATH+'style/background/image')
         self.get_widget('bgimage-filechooserbutton').set_filename(val)
 
         val = self.client.get_int(GCONF_PATH+'style/background/transparency')
         self.get_widget('transparency-hscale').set_value(val)
+        
 
         # the terminal window can be opened and the user *must* see this window
         self.get_widget('config-window').set_keep_above(True)
@@ -218,7 +228,6 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('treeview-keys').expand_all()
 
     # -- callbacks --
-
     def on_shells_combobox_changed(self, combo):
         citer = combo.get_active_iter()
         if not citer:
@@ -265,12 +274,17 @@ class PrefsDialog(SimpleGladeApp):
         self.guake.set_bgcolor()
 
     def on_bgimage_filechooserbutton_selection_changed(self, bnt):
-        files = bnt.get_filenames()
-        if files:
+        file = bnt.get_filename()
+        if file:
             self.client.set_string(GCONF_PATH + 'style/background/image',
-                    files[0])
+                    file)
             self.guake.set_bgimage()
 
+    def on_chk_bg_transparent_toggled(self, togglebutton):
+        value = togglebutton.get_active()
+        self.client.set_bool(GCONF_PATH + 'general/use_bgimage', not value)
+        self.guake.set_bgimage()
+            
     def on_transparency_hscale_value_changed(self, hscale):
         val = hscale.get_value()
         self.client.set_int(GCONF_PATH + 'style/background/transparency',
@@ -290,13 +304,26 @@ class PrefsDialog(SimpleGladeApp):
         # setting the new value on gconf
         self.client.set_string(gconf_path, key)
         self.guake.load_accelerators()
-
+    def update_preview_cb(file_chooser, preview):
+        """
+            Used by filechooser to preview image files
+        """
+        filename = file_chooser.get_preview_filename()
+        try:
+          pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 128, 128)
+          preview.set_from_pixbuf(pixbuf)
+          have_preview = True
+        except:
+          have_preview = False
+        file_chooser.set_preview_widget_active(have_preview)
+        return
 
 class Guake(SimpleGladeApp):
     def __init__(self):
         super(Guake, self).__init__(common.gladefile('guake.glade'))
         self.client = gconf.client_get_default()
-
+        # default option in case of gconf fails:
+        self.use_bgimage = False
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
@@ -448,10 +475,12 @@ class Guake(SimpleGladeApp):
 
     def set_bgimage(self):
         image = self.client.get_string(GCONF_PATH+'style/background/image')
+        self.use_bgimage = self.client.get_bool(GCONF_PATH+'general/use_bgimage')
         if image and os.path.exists(image):
             for i in self.term_list:
                 i.set_background_image_file(image)
-
+                i.set_background_transparent(not self.use_bgimage)
+                
     def set_fgcolor(self):
         color = self.client.get_string(GCONF_PATH+'style/font/color')
         fgcolor = gtk.gdk.color_parse(color)
@@ -469,8 +498,9 @@ class Guake(SimpleGladeApp):
 
     def set_alpha(self):
         alpha = self.client.get_int(GCONF_PATH+'style/background/transparency')
+        self.use_bgimage = self.client.get_bool(GCONF_PATH+'general/use_bgimage')
         for i in self.term_list:
-            i.set_background_transparent(bool(alpha))
+            i.set_background_transparent(not self.use_bgimage)
             i.set_background_saturation(alpha / 100.0)
 
     def set_tabpos(self):
@@ -505,6 +535,7 @@ class Guake(SimpleGladeApp):
     def add_tab(self):
         last_added = len(self.term_list)
         self.term_list.append(vte.Terminal())
+        self.term_list[last_added].set_sensitive(False)
         self.term_list[last_added].set_emulation('xterm')
 
         # TODO: make new terminal opens in the same dir of the already in use.
@@ -532,12 +563,14 @@ class Guake(SimpleGladeApp):
         hbox.show_all()
 
         # TODO: maybe the better way is give these choices to the user...
+        self.term_list[last_added].set_background_transparent(not self.use_bgimage)
         self.term_list[last_added].set_audible_bell(False) # without boring beep
         self.term_list[last_added].set_visible_bell(False) # without visible beep
         self.term_list[last_added].set_scroll_on_output(True) # auto scroll
         self.term_list[last_added].set_scroll_on_keystroke(True) # auto scroll
         self.term_list[last_added].set_scrollback_lines(10000) # history size
-
+        self.term_list[last_added].set_sensitive(True)
+        
         self.term_list[last_added].set_flags(gtk.CAN_DEFAULT)
         self.term_list[last_added].set_flags(gtk.CAN_FOCUS)
         self.term_list[last_added].connect('child-exited',
