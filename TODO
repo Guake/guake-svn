@@ -21,14 +21,14 @@ Guake Todo
 
  * Bug hunting =)
 
-    - Guake is appearing on the task list. OK
+    - DONE - Guake is appearing on the task list.
 
-    - Guake window must hide when lose focus.
+    - Guake window must hide when lose focus. NO! discard it! Some users like to do other things with guake opened and above it.
 
-    - Some times, when guake opens, it does not grabs the focus.
+    - DONE BUT IN TEST. Some times, when guake opens, it does not grabs the focus.
 
-    - When guake is hidden/shown the cursor is appearing on bottom without any
-      reason. DONE!
+    - DONE - When guake is hidden/shown the cursor is appearing on bottom without any
+      reason. 
 
  * Release the first alpha version
 

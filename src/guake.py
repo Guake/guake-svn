@@ -394,6 +394,8 @@ class Guake(SimpleGladeApp):
         self.visible = True
         self.window.move(0, 0)
         self.window.show_all()
+        self.window.get_focus()
+        self.window.grab_focus()
         self.window.stick()
         self.animate_show()
         if not self.term_list:
@@ -536,8 +538,6 @@ class Guake(SimpleGladeApp):
         last_added = len(self.term_list)
         self.term_list.append(vte.Terminal())
         self.term_list[last_added].set_sensitive(False)
-        self.term_list[last_added].set_emulation('xterm')
-
         # TODO: make new terminal opens in the same dir of the already in use.
 
         shell_name = self.client.get_string(GCONF_PATH+'general/default_shell')
