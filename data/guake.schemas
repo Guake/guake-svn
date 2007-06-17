@@ -15,6 +15,19 @@
         </schema>
 
         <schema>
+            <key>/schemas/apps/guake/general/hide_on_lost_focus</key>
+            <applyto>/apps/guake/general/hide_on_lost_focus</applyto>
+            <owner>guake</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Determine if guake hides on lost focus.</short>
+                <long>If this property is set as true, guake will be hidden when
+                lost focus.</long>
+            </locale>
+        </schema>
+
+        <schema>
             <key>/schemas/apps/guake/general/use_bgimage</key>
             <applyto>/apps/guake/general/use_bgimage</applyto>
             <owner>guake</owner>

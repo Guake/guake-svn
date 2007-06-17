@@ -71,6 +71,9 @@ class PrefsDialog(SimpleGladeApp):
         self.guake = guakeinstance
         self.client = gconf.client_get_default()
 
+        #New widgets added
+        self.chk_lostfocus = self.get_widget('hide-onlostfocus-checkbutton')
+        self.chk_lostfocus.connect('toggled',self.on_chk_lostfocus_toggled)
         # images
         ipath = common.pixmapfile('guakeabt.png')
         self.get_widget('image_logo').set_from_file(ipath)
@@ -131,6 +134,10 @@ class PrefsDialog(SimpleGladeApp):
             value = model.get_value(i.iter, 0)
             if value == default:
                 combo.set_active_iter(i.iter)
+
+        # hide on lost focus
+        ac = self.client.get_bool(GCONF_PATH + 'general/hide_on_lost_focus')
+        self.get_widget('hide-onlostfocus-checkbutton').set_active(ac)
 
         # animate flag
         ac = self.client.get_bool(GCONF_PATH + 'general/window_animate')
@@ -228,6 +235,10 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('treeview-keys').expand_all()
 
     # -- callbacks --
+    def on_chk_lostfocus_toggled(self, chk):
+        bool = chk.get_active()
+        self.client.set_bool(GCONF_PATH + 'general/hide_on_lost_focus', bool)
+        
     def on_shells_combobox_changed(self, combo):
         citer = combo.get_active_iter()
         if not citer:
@@ -304,7 +315,7 @@ class PrefsDialog(SimpleGladeApp):
         # setting the new value on gconf
         self.client.set_string(gconf_path, key)
         self.guake.load_accelerators()
-    def update_preview_cb(file_chooser, preview):
+    def update_preview_cb(self,file_chooser, preview):
         """
             Used by filechooser to preview image files
         """
@@ -355,12 +366,19 @@ class Guake(SimpleGladeApp):
         self.window.add_accel_group(self.accel_group)
         self.window.set_keep_above(True)
         self.window.set_geometry_hints(min_width=1, min_height=1)
+        self.window.connect('focus-out-event',self.on_window_lostfocus)
 
         self.load_config()
         self.load_accelerators()
         self.refresh()
         self.add_tab()
-
+    def on_window_lostfocus(self,window, event):
+        getb = lambda x:self.client.get_bool(x)
+        value = getb(GCONF_PATH+'general/hide_on_lost_focus')
+        print "nofocus"
+        if value == True:
+            self.hide()
+        
     def refresh(self):
         # FIXME: vte.Terminal need to be showed with his parent window to
         # can load his configs of back/fore color, fonts, etc.
