@@ -28,7 +28,7 @@ Guake Todo
     - Some times, when guake opens, it does not grabs the focus.
 
     - When guake is hidden/shown the cursor is appearing on bottom without any
-      reason.
+      reason. DONE!
 
  * Release the first alpha version
 
