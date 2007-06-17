@@ -65,6 +65,6 @@ def hexify_color(c):
     return '#%s%s%s' % (h(c.red), h(c.green), h(c.blue))
 
 def update_ui():
-    time.sleep(0.0000000000000001)
+    time.sleep(1/(10**20))
     while gtk.events_pending():
         gtk.main_iteration()

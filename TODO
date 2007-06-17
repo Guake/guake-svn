@@ -6,6 +6,8 @@ Guake Todo
  * Cleanup image names and maybe create a directory for them
 
  * Error handling to can take a default action if something external fails
+ 
+ * Add a feature to set the scrollback history lines in the terminal, so add a entry in prefs window to setup it
      
     - Example:
           - When try to load configs from gconf, trying to get a int, but with a string in gconf schema, it make a segmentation fault.
@@ -36,7 +38,7 @@ Guake Todo
     can be used to notify when guake is opened
     to show all errors
 
- * Show error when keybind fails
+ * Show error when keybind fails - PARTIALLY IMPLEMENTED
 
  * Maybe create a namespace to store all standard messages, specialy errors and warnings, and so, use gettext in them ! Obvious :) 
 
