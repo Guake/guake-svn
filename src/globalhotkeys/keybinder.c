@@ -133,6 +133,7 @@ do_grab_key (Binding *binding)
 
 	if (gdk_error_trap_pop ()) {
 	   g_warning ("Binding '%s' failed!\n", binding->keystring);
+      PyErr_SetString(PyExc_RuntimeError, "Binding failed!\n");
 	   return FALSE;
 	}
 

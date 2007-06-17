@@ -339,8 +339,11 @@ class Guake(SimpleGladeApp):
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
-        globalhotkeys.bind(key, self.show_hide)
-
+        bind_result = globalhotkeys.bind(key, self.show_hide)
+        if bind_result == 0:
+            print "Error when binding %s"%key
+            import sys
+            sys.exit(1)
         # trayicon!
         tray_icon = GuakeStatusIcon()
         tray_icon.connect('popup-menu', self.show_menu)
