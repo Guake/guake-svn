@@ -315,6 +315,7 @@ class PrefsDialog(SimpleGladeApp):
         # setting the new value on gconf
         self.client.set_string(gconf_path, key)
         self.guake.load_accelerators()
+        
     def update_preview_cb(self,file_chooser, preview):
         """
             Used by filechooser to preview image files
@@ -375,7 +376,6 @@ class Guake(SimpleGladeApp):
     def on_window_lostfocus(self,window, event):
         getb = lambda x:self.client.get_bool(x)
         value = getb(GCONF_PATH+'general/hide_on_lost_focus')
-        print "nofocus"
         if value == True:
             self.hide()
         
@@ -586,6 +586,7 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].set_visible_bell(False) # without visible beep
         self.term_list[last_added].set_scroll_on_output(True) # auto scroll
         self.term_list[last_added].set_scroll_on_keystroke(True) # auto scroll
+        self.term_list[last_added].set_scroll_background(True) # auto scroll
         self.term_list[last_added].set_scrollback_lines(10000) # history size
         self.term_list[last_added].set_sensitive(True)
         
