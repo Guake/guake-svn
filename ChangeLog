@@ -1,3 +1,53 @@
+2007-06-17  Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* src/globalhotkeys/globalhotkeys.c: Adding two lines to make the code
+	pretty =D
+
+	* src/globalhotkeys/testbinding.c: Adding license information (Never forget
+	this again!!!)
+
+	* src/common.py: Removing translation functions (using bindtextdomain
+	function in simpleglade.py)
+
+	* src/guake.py: Calling bindtextdomain function to setup translation,
+	changing guakeabt.png image name to guake.png, little code cleanup,
+
+	* src/guake.py (Guake): Some methods was moved to be nearer to methods that
+	does closed things (load_config and load_accelerators specifically). Added
+	accel_* methods to avoid Control caracters in terminal widget (these
+	methods are connected to a key action, and they returns True -- this is the
+	trick)
+
+	* src/guake.py (Guake.update_preview_cb): Changing number of params (self
+	was not there =/) and removing unecessary try/except and using a simple if.
+	The image size was changed too.
+
+	* src/guake.py (Guake.add_tab): Added a scrollbar in every new tab added.
+
+	* src/guake.py (guake.set_last_pos,add_tab): Improved the way to get the
+	current tab shown.
+
+	* src/guake.py (Guake.on_terminal_exited): Adding a new parameter (term) to
+	this callback. It was necessary because when a terminal exits the widget
+	sent is not a terminal, after the change above, it must be sent as
+	user_data to this callback.
+
+	* src/simplegladeapp.py: Commenting setlocale call to avoid problems with
+	languages with sufixes (as pt_BR.utf8)
+
+	* po-extact: Fixing a bug that was removing all .h files in project =/ no
+	it only removes *.glade.h files...
+
+	* data/pixmaps,
+	* data/pixmaps/Makefile.am: Added.
+
+	* data/*.png,
+	* data/*.svg: Moved to data/pixmaps
+
+	* configure.ac: Adding data/pixmaps/Makefile in output list.
+
+	* TODO: Updated.
+
 2007-06-14  Lincoln de Sousa <lincoln@archlinux-br.org>
 
 	* src/globalhotkeys/example.py: Added

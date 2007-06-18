@@ -1,7 +1,7 @@
 Guake Todo
 ==========
 
- * Code cleanup (Lincoln)
+ - DONE * Code cleanup (Lincoln)
 
  * Cleanup image names and maybe create a directory for them
 
@@ -17,20 +17,20 @@ Guake Todo
    graphics at this moment =D (but is important to store the
    svg `source files' to edit them later)
 
- * Finish Preferences window
+ - DONE * Finish Preferences window (Gabriel)
 
- * Make translation works (Lincoln)
+ - DONE * Make translation works (Lincoln)
 
  * Bug hunting =)
 
-    - DONE - Guake is appearing on the task list.
+    - DONE - Guake is appearing on the task list. (Lincoln)
 
     - DONE - Added a option for this on prefs window : Guake window must hide when lose focus. NO! discard it! Some users like to do other things with guake opened and above it.
 
     - DONE - Some times, when guake opens, it does not grabs the focus.
 
     - DONE - When guake is hidden/shown the cursor is appearing on bottom without any
-      reason. 
+      reason. (Lincoln)
 
  * Release the first alpha version
 
@@ -43,8 +43,8 @@ Guake Todo
  * Maybe create a namespace to store all standard messages, specialy errors and warnings, and so, use gettext in them ! Obvious :) 
 
  * Add keybindings to:
-	# Add new tab
-	# remove current tab
+	# Add new tab OK
+	# remove current tab (I use ctrl+d, maybe a way to explain to the user...)
 	# Set window size, here we will set only 10 default sizes:
 		# Ctrl-Super-1 -> set to 10% of window
 		...

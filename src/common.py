@@ -25,12 +25,6 @@ import gettext
 import time
 import guake_globals
 
-# TODO: This should be a function and called in the main guake script.
-# otherwise common must be imported in main script
-locale.setlocale(locale.LC_ALL, '')
-gettext.bindtextdomain(guake_globals, guake_globals.locale_dir)
-gettext.textdomain(guake_globals)
-
 # Internationalization purposes.
 _ = gettext.gettext
 

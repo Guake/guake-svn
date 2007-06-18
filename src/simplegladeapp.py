@@ -21,6 +21,9 @@ to pygtk and libglade.
 
     - Adding `object' as base class to SimpleGladeApp class.
     by Lincoln de Sousa <lincoln@archlinux-br.org>
+
+    - Commenting `setlocale' call to avoid problems with languages with
+      sufixes (as pt_BR.utf8) by Lincoln de Sousa <lincoln@archlinux-br.org>
 """
 
 
@@ -56,7 +59,8 @@ def bindtextdomain(app_name, locale_dir=None):
     try:
         import locale
         import gettext
-        locale.setlocale(locale.LC_ALL, "")
+        # FIXME: Commented to avoid problems with a .utf8 LANG variable...
+        # locale.setlocale(locale.LC_ALL, "")
         gettext.bindtextdomain(app_name, locale_dir)
         gettext.textdomain(app_name)
         gtk.glade.bindtextdomain(app_name, locale_dir)

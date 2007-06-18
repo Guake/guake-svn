@@ -32,7 +32,7 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
 fi
 
 find . -name '*.glade' -exec intltool-extract --type="gettext/glade" {} \;
-find . -name '*.h' -exec mv {} . \;
+find . -name '*.glade.h' -exec mv {} . \;
 find . -name '*.py' -exec xgettext -k_ -kN_ -o messages.pot {} *.h --from-code=utf-8 \;
 rm *.h
 

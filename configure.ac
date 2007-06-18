@@ -75,6 +75,7 @@ AC_CONFIG_FILES([
     data/Makefile
     data/guake.desktop
     data/org.gnome.Guake.service
+    data/pixmaps/Makefile
     po/Makefile.in
     src/Makefile
     src/globalhotkeys/Makefile

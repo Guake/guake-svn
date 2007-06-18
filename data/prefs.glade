@@ -128,6 +128,7 @@
                                     <property name="label" translatable="yes">Animate on "show and hide"</property>
                                     <property name="use_underline">True</property>
                                     <property name="focus_on_click">False</property>
+                                    <property name="response_id">0</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_animate_checkbutton_toggled"/>
@@ -142,6 +143,7 @@
                                     <property name="label" translatable="yes">Stay on top</property>
                                     <property name="use_underline">True</property>
                                     <property name="focus_on_click">False</property>
+                                    <property name="response_id">0</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
                                     <signal name="toggled" handler="on_ontop_checkbutton_toggled"/>
@@ -256,6 +258,7 @@
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Bottom</property>
                                             <property name="use_underline">True</property>
+                                            <property name="response_id">0</property>
                                             <property name="active">True</property>
                                             <property name="draw_indicator">True</property>
                                             <signal name="toggled" handler="on_tabbottom_radiobutton_toggled"/>
@@ -284,6 +287,7 @@
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Top</property>
                                             <property name="use_underline">True</property>
+                                            <property name="response_id">0</property>
                                             <property name="active">True</property>
                                             <property name="draw_indicator">True</property>
                                             <property name="group">tabbottom-radiobutton</property>
@@ -378,6 +382,7 @@
                                       <widget class="GtkFontButton" id="fontbutton">
                                         <property name="visible">True</property>
                                         <property name="focus_on_click">False</property>
+                                        <property name="response_id">0</property>
                                         <property name="title" translatable="yes">Choose some font</property>
                                         <signal name="font_set" handler="on_fontbutton_font_set"/>
                                       </widget>
@@ -410,6 +415,7 @@
                                     <child>
                                       <widget class="GtkColorButton" id="font-colorbutton">
                                         <property name="visible">True</property>
+                                        <property name="response_id">0</property>
                                         <property name="title" translatable="yes">Choose some color</property>
                                         <signal name="color_set" handler="on_font_colorbutton_color_set"/>
                                       </widget>
@@ -475,6 +481,7 @@
                                     <child>
                                       <widget class="GtkColorButton" id="bg-colorbutton">
                                         <property name="visible">True</property>
+                                        <property name="response_id">0</property>
                                         <property name="title" translatable="yes">Choose some color</property>
                                         <signal name="color_set" handler="on_bg_colorbutton_color_set"/>
                                       </widget>
@@ -528,9 +535,6 @@
                                         <property name="ellipsize">PANGO_ELLIPSIZE_MIDDLE</property>
                                         <property name="single_line_mode">True</property>
                                       </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                      </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkHScale" id="transparency-hscale">
@@ -547,6 +551,7 @@
                                     </child>
                                   </widget>
                                   <packing>
+                                    <property name="padding">6</property>
                                     <property name="position">2</property>
                                   </packing>
                                 </child>
@@ -563,14 +568,12 @@
                                         <property name="ellipsize">PANGO_ELLIPSIZE_MIDDLE</property>
                                         <property name="single_line_mode">True</property>
                                       </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                      </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkCheckButton" id="chk_bg_transparent">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="response_id">0</property>
                                         <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
                                         <signal name="toggled" handler="on_chk_bg_transparent_toggled"/>
@@ -584,6 +587,7 @@
                                     </child>
                                   </widget>
                                   <packing>
+                                    <property name="padding">4</property>
                                     <property name="position">3</property>
                                   </packing>
                                 </child>
@@ -681,6 +685,7 @@
                 <property name="can_focus">True</property>
                 <property name="label">gtk-close</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
                 <signal name="clicked" handler="gtk_widget_destroy" object="config-window"/>
               </widget>
             </child>

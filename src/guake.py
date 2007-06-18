@@ -33,10 +33,14 @@ import os
 import sys
 import common
 from common import _
-from simplegladeapp import SimpleGladeApp
+from simplegladeapp import SimpleGladeApp, bindtextdomain
 from statusicon import GuakeStatusIcon
 import dbusiface
 import globalhotkeys
+import guake_globals
+
+# Loading translation
+bindtextdomain(guake_globals.name, guake_globals.locale_dir)
 
 SHELLS_FILE = '/etc/shells'
 GCONF_PATH = '/apps/guake/'
@@ -58,7 +62,7 @@ class AboutDialog(SimpleGladeApp):
         self.get_widget('aboutdialog').set_keep_above(True)
 
         # images
-        ipath = common.pixmapfile('guakeabt.png')
+        ipath = common.pixmapfile('guake.png')
         img = gtk.gdk.pixbuf_new_from_file(ipath)
         self.get_widget('aboutdialog').set_property('logo', img)
 
@@ -71,11 +75,12 @@ class PrefsDialog(SimpleGladeApp):
         self.guake = guakeinstance
         self.client = gconf.client_get_default()
 
-        #New widgets added
+        # New widgets added
         self.chk_lostfocus = self.get_widget('hide-onlostfocus-checkbutton')
-        self.chk_lostfocus.connect('toggled',self.on_chk_lostfocus_toggled)
+        self.chk_lostfocus.connect('toggled', self.on_chk_lostfocus_toggled)
+
         # images
-        ipath = common.pixmapfile('guakeabt.png')
+        ipath = common.pixmapfile('guake.png')
         self.get_widget('image_logo').set_from_file(ipath)
         ipath = common.pixmapfile('tabdown.svg')
         self.get_widget('image1').set_from_file(ipath)
@@ -111,11 +116,13 @@ class PrefsDialog(SimpleGladeApp):
         self.populate_keys_tree()
         self.load_configs()
         self.get_widget('config-window').hide()
-        #Preview when selecting a bgimage
+
+        # Preview when selecting a bgimage
         self.selection_preview = gtk.Image()
         self.bgfilechooser = self.get_widget('bgimage-filechooserbutton')
         self.bgfilechooser.set_preview_widget(self.selection_preview)
-        self.bgfilechooser.connect("update-preview", self.update_preview_cb, self.selection_preview)
+        self.bgfilechooser.connect('update-preview', self.update_preview_cb,
+                self.selection_preview)
 
     def show(self):
         self.get_widget('config-window').show_all()
@@ -124,8 +131,6 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('config-window').hide()
         
     def load_configs(self):
-        # getting values from gconf
-        
         # shells list
         default = self.client.get_string(GCONF_PATH + 'general/default_shell')
         combo = self.get_widget('shells-combobox')
@@ -188,7 +193,6 @@ class PrefsDialog(SimpleGladeApp):
 
         val = self.client.get_int(GCONF_PATH+'style/background/transparency')
         self.get_widget('transparency-hscale').set_value(val)
-        
 
         # the terminal window can be opened and the user *must* see this window
         self.get_widget('config-window').set_keep_above(True)
@@ -235,6 +239,7 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('treeview-keys').expand_all()
 
     # -- callbacks --
+
     def on_chk_lostfocus_toggled(self, chk):
         bool = chk.get_active()
         self.client.set_bool(GCONF_PATH + 'general/hide_on_lost_focus', bool)
@@ -315,27 +320,28 @@ class PrefsDialog(SimpleGladeApp):
         # setting the new value on gconf
         self.client.set_string(gconf_path, key)
         self.guake.load_accelerators()
-        
+
     def update_preview_cb(self,file_chooser, preview):
         """
-            Used by filechooser to preview image files
+        Used by filechooser to preview image files
         """
         filename = file_chooser.get_preview_filename()
-        try:
-          pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 128, 128)
-          preview.set_from_pixbuf(pixbuf)
-          have_preview = True
-        except:
-          have_preview = False
-        file_chooser.set_preview_widget_active(have_preview)
-        return
+        if filename:
+            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 256, 256)
+            preview.set_from_pixbuf(pixbuf)
+            file_chooser.set_preview_widget_active(True)
+        else:
+            file_chooser.set_preview_widget_active(False)
+
 
 class Guake(SimpleGladeApp):
     def __init__(self):
         super(Guake, self).__init__(common.gladefile('guake.glade'))
         self.client = gconf.client_get_default()
+
         # default option in case of gconf fails:
         self.use_bgimage = False
+
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
@@ -376,6 +382,7 @@ class Guake(SimpleGladeApp):
         self.load_accelerators()
         self.refresh()
         self.add_tab()
+
     def on_window_lostfocus(self,window, event):
         getb = lambda x:self.client.get_bool(x)
         value = getb(GCONF_PATH+'general/hide_on_lost_focus')
@@ -392,13 +399,15 @@ class Guake(SimpleGladeApp):
         menu = self.get_widget('tray-menu')
         menu.popup(None, None, None, 3, gtk.get_current_event_time())
 
-    # -- extra methods and methods called by dbus interface --
+    # -- methods exclusivelly called by dbus interface --
 
     def show_about(self):
         AboutDialog()
 
     def show_prefs(self):
         PrefsDialog(self).show()
+
+    # -- controls main window visibility and size --
 
     def show_hide(self, *args):
         screen = self.window.get_screen()
@@ -424,38 +433,9 @@ class Guake(SimpleGladeApp):
 
     def hide(self):
         self.animate_hide()
-        self.window.hide_all()
+        self.window.hide() # FIXME: Don't use hide_all here!
         self.window.unstick()
         self.visible = False
-
-    def load_config(self):
-        self.set_fgcolor()
-        self.set_font()
-        self.set_bgcolor()
-        self.set_bgimage()
-        self.set_alpha()
-        self.set_tabpos()
-
-    def load_accelerators(self):
-        gets = lambda x:self.client.get_string(x)
-        ac = gets(GCONF_PATH+'keybindings/local/new_tab')
-        key, mask = gtk.accelerator_parse(ac)
-        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
-                lambda *x:self.add_tab())
-
-        ac = gets(GCONF_PATH+'keybindings/local/previous_tab')
-        key, mask = gtk.accelerator_parse(ac)
-        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
-                lambda *x:self.notebook.prev_page())
-
-        ac = gets(GCONF_PATH+'keybindings/local/next_tab')
-        key, mask = gtk.accelerator_parse(ac)
-        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
-                lambda *x:self.notebook.next_page())
-
-    def resize(self, width, height):
-        self.window.resize(width, height)
-        self.window.set_default_size(width, height)
 
     def animate_show(self, *args):
         width, final_height = self.get_final_window_size()
@@ -486,6 +466,49 @@ class Guake(SimpleGladeApp):
         total_height = self.window.get_screen().get_height()
         final_height = total_height * height / 100
         return width, final_height
+
+    def resize(self, width, height):
+        self.window.resize(width, height)
+        self.window.set_default_size(width, height)
+
+    # -- configuration --
+
+    def load_config(self):
+        self.set_fgcolor()
+        self.set_font()
+        self.set_bgcolor()
+        self.set_bgimage()
+        self.set_alpha()
+        self.set_tabpos()
+
+    def load_accelerators(self):
+        gets = lambda x:self.client.get_string(x)
+        ac = gets(GCONF_PATH+'keybindings/local/new_tab')
+        key, mask = gtk.accelerator_parse(ac)
+        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
+                self.accel_add)
+
+        ac = gets(GCONF_PATH+'keybindings/local/previous_tab')
+        key, mask = gtk.accelerator_parse(ac)
+        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
+                self.accel_prev)
+
+        ac = gets(GCONF_PATH+'keybindings/local/next_tab')
+        key, mask = gtk.accelerator_parse(ac)
+        self.accel_group.connect_group(key, mask, gtk.ACCEL_VISIBLE,
+                self.accel_next)
+
+    def accel_add(self, *args):
+        self.add_tab()
+        return True
+
+    def accel_prev(self, *args):
+        self.notebook.prev_page()
+        return True
+
+    def accel_next(self, *args):
+        self.notebook.next_page()
+        return True
 
     # -- format functions --
 
@@ -546,7 +569,7 @@ class Guake(SimpleGladeApp):
     def on_add_button_clicked(self, *args):
         self.add_tab()
 
-    def on_terminal_exited(self, widget):
+    def on_terminal_exited(self, term, widget):
         self.delete_tab(self.notebook.page_num(widget))
 
     def on_close_button_close_clicked(self, widget, index):
@@ -560,7 +583,6 @@ class Guake(SimpleGladeApp):
         self.term_list.append(vte.Terminal())
         self.term_list[last_added].set_sensitive(False)
         # TODO: make new terminal opens in the same dir of the already in use.
-
         shell_name = self.client.get_string(GCONF_PATH+'general/default_shell')
         self.term_list[last_added].fork_command(shell_name or "bash",
                 directory=os.path.expanduser('~'))
@@ -577,14 +599,23 @@ class Guake(SimpleGladeApp):
         button.connect('clicked', self.on_close_button_close_clicked,
                 self.last_pos)
 
-        hbox = gtk.HBox(False, 0)
+        hbox = gtk.HBox(False, False)
         hbox.set_border_width(1)
         hbox.pack_start(label)
         hbox.pack_start(button)
         hbox.show_all()
 
-        # TODO: maybe the better way is give these choices to the user...
+        # scrollbar
+        adj = self.term_list[last_added].get_adjustment()
+        scroll = gtk.VScrollbar(adj)
+
+        mhbox = gtk.HBox()
+        mhbox.pack_start(self.term_list[last_added], True, True)
+        mhbox.pack_start(scroll, False, False)
+        mhbox.show_all()
+
         self.term_list[last_added].set_background_transparent(not self.use_bgimage)
+        # TODO: maybe the better way is give these choices to the user...
         self.term_list[last_added].set_audible_bell(False) # without boring beep
         self.term_list[last_added].set_visible_bell(False) # without visible beep
         self.term_list[last_added].set_scroll_on_output(True) # auto scroll
@@ -596,10 +627,10 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].set_flags(gtk.CAN_DEFAULT)
         self.term_list[last_added].set_flags(gtk.CAN_FOCUS)
         self.term_list[last_added].connect('child-exited',
-                self.on_terminal_exited)
+                self.on_terminal_exited, mhbox)
         self.term_list[last_added].grab_focus()
-        self.notebook.append_page(self.term_list[last_added], hbox)
-        self.notebook.connect('select-page', self.set_last_pos)
+
+        self.notebook.append_page(mhbox, hbox)
         self.notebook.connect('switch-page', self.set_last_pos)
         self.notebook.connect('focus-tab', self.set_terminal_focus)
 
@@ -626,8 +657,8 @@ class Guake(SimpleGladeApp):
         else:
             self.notebook.set_show_tabs(True)
 
-    def set_last_pos(self, *args):
-        self.last_pos = self.notebook.get_current_page()
+    def set_last_pos(self, notebook, page, page_num):
+        self.last_pos = page_num
 
 
 def main():

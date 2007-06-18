@@ -27,7 +27,6 @@ You should have received a copy of the GNU General Public License along with Gua
 </property>
     <property name="authors">Gabriel Falcao &lt;gabrielteratos@gmail.com&gt;
 Lincoln de Sousa &lt;lincoln@archlinux-br.org&gt;</property>
-    <property name="logo">guakeabt.png</property>
     <property name="wrap_license">True</property>
     <signal name="response" handler="gtk_widget_destroy" object="aboutdialog"/>
     <child internal-child="vbox">
