@@ -1,5 +1,7 @@
 2007-06-17  Lincoln de Sousa <lincoln@archlinux-br.org>
 
+	* src/globalhotkeys/keybinder.c: Removing a little test...
+
 	* src/globalhotkeys/globalhotkeys.c: Adding two lines to make the code
 	pretty =D
 
