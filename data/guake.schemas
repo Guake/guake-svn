@@ -2,6 +2,30 @@
     <schemalist>
 
         <schema>
+            <key>/schemas/apps/guake/general/history_size</key>
+            <applyto>/apps/guake/general/history_size</applyto>
+            <owner>guake</owner>
+            <type>int</type>
+            <default>2048</default>
+            <locale name="C">
+                <short>History Size.</short>
+                <long>The number of scrollback lines to save as history.</long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/apps/guake/general/use_scrollbar</key>
+            <applyto>/apps/guake/general/use_scrollbar</applyto>
+            <owner>guake</owner>
+            <type>bool</type>
+            <default>true</default>
+            <locale name="C">
+                <short>Sets the scrollbar visibility.</short>
+                <long>When true scrollbar is visible.</long>
+            </locale>
+        </schema>
+        
+        <schema>
             <key>/schemas/apps/guake/general/default_shell</key>
             <applyto>/apps/guake/general/default_shell</applyto>
             <owner>guake</owner>

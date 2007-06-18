@@ -75,10 +75,6 @@ class PrefsDialog(SimpleGladeApp):
         self.guake = guakeinstance
         self.client = gconf.client_get_default()
 
-        # New widgets added
-        self.chk_lostfocus = self.get_widget('hide-onlostfocus-checkbutton')
-        self.chk_lostfocus.connect('toggled', self.on_chk_lostfocus_toggled)
-
         # images
         ipath = common.pixmapfile('guake.png')
         self.get_widget('image_logo').set_from_file(ipath)
@@ -139,6 +135,14 @@ class PrefsDialog(SimpleGladeApp):
             value = model.get_value(i.iter, 0)
             if value == default:
                 combo.set_active_iter(i.iter)
+
+        # history size
+        val = self.client.get_int(GCONF_PATH+'general/history_size')
+        self.get_widget('spinHistorySize').set_value(val)
+
+        # scrollbar
+        ac = self.client.get_bool(GCONF_PATH + 'general/use_scrollbar')
+        self.get_widget('show-scrollbar-checkbutton').set_active(ac)
 
         # hide on lost focus
         ac = self.client.get_bool(GCONF_PATH + 'general/hide_on_lost_focus')
@@ -237,9 +241,16 @@ class PrefsDialog(SimpleGladeApp):
                     3, True)
 
         self.get_widget('treeview-keys').expand_all()
-
+        
     # -- callbacks --
-
+    def on_spinHistorySize_value_changed(self, spinBtn):
+        val = int(spinBtn.get_value())
+        self.client.set_int(GCONF_PATH + 'general/history_size', val)
+        
+    def on_show_scrollbar_checkbutton_toggled(self, chk):
+        bool = chk.get_active()
+        self.client.set_bool(GCONF_PATH + 'general/use_scrollbar', bool)
+        
     def on_chk_lostfocus_toggled(self, chk):
         bool = chk.get_active()
         self.client.set_bool(GCONF_PATH + 'general/hide_on_lost_focus', bool)
@@ -346,7 +357,7 @@ class Guake(SimpleGladeApp):
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
         bind_result = globalhotkeys.bind(key, self.show_hide)
-        if bind_result == 0:
+        if not bind_result:
             print "Error when binding %s"%key
             import sys
             sys.exit(1)
@@ -597,7 +608,7 @@ class Guake(SimpleGladeApp):
         button.set_image(image)
         button.set_relief(gtk.RELIEF_NONE)
         button.connect('clicked', self.on_close_button_close_clicked,
-                self.last_pos)
+                last_added)
 
         hbox = gtk.HBox(False, False)
         hbox.set_border_width(1)
@@ -613,7 +624,7 @@ class Guake(SimpleGladeApp):
         mhbox.pack_start(self.term_list[last_added], True, True)
         mhbox.pack_start(scroll, False, False)
         mhbox.show_all()
-
+            
         self.term_list[last_added].set_background_transparent(not self.use_bgimage)
         # TODO: maybe the better way is give these choices to the user...
         self.term_list[last_added].set_audible_bell(False) # without boring beep
@@ -621,7 +632,8 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].set_scroll_on_output(True) # auto scroll
         self.term_list[last_added].set_scroll_on_keystroke(True) # auto scroll
         self.term_list[last_added].set_scroll_background(True) # auto scroll
-        self.term_list[last_added].set_scrollback_lines(10000) # history size
+        history_size = self.client.get_int(GCONF_PATH+'general/history_size')
+        self.term_list[last_added].set_scrollback_lines(history_size) # history size
         self.term_list[last_added].set_sensitive(True)
         
         self.term_list[last_added].set_flags(gtk.CAN_DEFAULT)
@@ -629,7 +641,11 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].connect('child-exited',
                 self.on_terminal_exited, mhbox)
         self.term_list[last_added].grab_focus()
-
+        #showing scrollbar based in gconf setting:
+        scrollbar_visible = self.client.get_bool(GCONF_PATH+'general/use_scrollbar')
+        if scrollbar_visible==False:
+            scroll.destroy()
+            
         self.notebook.append_page(mhbox, hbox)
         self.notebook.connect('switch-page', self.set_last_pos)
         self.notebook.connect('focus-tab', self.set_terminal_focus)

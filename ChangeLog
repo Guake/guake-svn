@@ -1,3 +1,16 @@
+2007-06-17  Gabriel Falcao <gabrielteratos@gmail.com>
+
+	* data/guake.schema: Adding two more keys: scrollbar visibe(bool) and history size(int)
+
+	* data/prefs.glade: Adding widget to setup scrollback lines(aka. history size)
+
+	* data/prefs.glade: Adding widget to setup scrollbar visibility
+
+	* src/guake.py: Added respective methods to handle history size and scrollbar visibility
+
+
+
+
 2007-06-17  Lincoln de Sousa <lincoln@archlinux-br.org>
 
 	* src/globalhotkeys/keybinder.c: Removing a little test...
