@@ -1,15 +1,27 @@
+2007-06-19  Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* src/common.py: Adding ShowableError class and test_gconf function.
+
+	* src/guake.py (Guake.add_tab): Improving logic that hiddes scrollbar.
+
+	* src/guake.py (Guake.show): Removing some unusefull code.
+
+	* src/guake.py: Adding a call to test_gconf in main section of module.
+
+	* TODO: Updated.
+
 2007-06-17  Gabriel Falcao <gabrielteratos@gmail.com>
 
-	* data/guake.schema: Adding two more keys: scrollbar visibe(bool) and history size(int)
+	* data/guake.schema: Adding two more keys: scrollbar visibe (bool) and
+	history size(int)
 
-	* data/prefs.glade: Adding widget to setup scrollback lines(aka. history size)
+	* data/prefs.glade: Adding widget to setup scrollback lines (aka. history
+	size)
 
 	* data/prefs.glade: Adding widget to setup scrollbar visibility
 
-	* src/guake.py: Added respective methods to handle history size and scrollbar visibility
-
-
-
+	* src/guake.py: Added respective methods to handle history size and
+	scrollbar visibility
 
 2007-06-17  Lincoln de Sousa <lincoln@archlinux-br.org>
 

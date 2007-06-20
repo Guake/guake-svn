@@ -434,9 +434,7 @@ class Guake(SimpleGladeApp):
         self.window.set_gravity(gtk.gdk.GRAVITY_NORTH)
         self.visible = True
         self.window.move(0, 0)
-        self.window.show_all()
-        self.window.get_focus()
-        self.window.grab_focus()
+        self.window.show()
         self.window.stick()
         self.animate_show()
         if not self.term_list:
@@ -616,13 +614,16 @@ class Guake(SimpleGladeApp):
         hbox.pack_start(button)
         hbox.show_all()
 
-        # scrollbar
-        adj = self.term_list[last_added].get_adjustment()
-        scroll = gtk.VScrollbar(adj)
-
         mhbox = gtk.HBox()
         mhbox.pack_start(self.term_list[last_added], True, True)
-        mhbox.pack_start(scroll, False, False)
+
+        # showing scrollbar based in gconf setting:
+        scrollbar_visible = self.client.get_bool(GCONF_PATH+'general/use_scrollbar')
+        if scrollbar_visible:
+            adj = self.term_list[last_added].get_adjustment()
+            scroll = gtk.VScrollbar(adj)
+            mhbox.pack_start(scroll, False, False)
+
         mhbox.show_all()
             
         self.term_list[last_added].set_background_transparent(not self.use_bgimage)
@@ -641,11 +642,7 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].connect('child-exited',
                 self.on_terminal_exited, mhbox)
         self.term_list[last_added].grab_focus()
-        #showing scrollbar based in gconf setting:
-        scrollbar_visible = self.client.get_bool(GCONF_PATH+'general/use_scrollbar')
-        if scrollbar_visible==False:
-            scroll.destroy()
-            
+
         self.notebook.append_page(mhbox, hbox)
         self.notebook.connect('switch-page', self.set_last_pos)
         self.notebook.connect('focus-tab', self.set_terminal_focus)
@@ -728,7 +725,14 @@ def main():
 
 if __name__ == '__main__':
     from dbusiface import dbus_init
+    from common import test_gconf, ShowableError
     main()
+
+    if not test_gconf():
+        raise ShowableError(_('Guake can not init!'),
+            _('Gconf Error.\n'
+              'Have you installed <b>guake.schemas</b> properlly?'))
+
     g = Guake()
     dbus_init(g)
     g.run()

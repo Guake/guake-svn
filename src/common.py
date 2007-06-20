@@ -18,7 +18,9 @@ License along with this program; if not, write to the
 Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 """
-import gtk, sys
+import gtk
+import gconf
+import sys
 import os
 import locale
 import gettext
@@ -28,11 +30,25 @@ import guake_globals
 # Internationalization purposes.
 _ = gettext.gettext
 
+class ShowableError(Exception):
+    def __init__(self, title, msg, exit_code=1):
+        d = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
+                buttons=gtk.BUTTONS_CLOSE)
+        d.set_markup('<b><big>%s</big></b>' % title)
+        d.format_secondary_markup(msg)
+        d.run()
+        d.destroy()
+        sys.exit(exit_code)
+
 def test_dbus(bus, interface):
     obj = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
     dbus_iface = dbus.Interface(obj, 'org.freedesktop.DBus')
     avail = dbus_iface.ListNames()
     return interface in avail
+
+def test_gconf():
+    c = gconf.client_get_default()
+    return c.dir_exists('/apps/guake')
 
 def std_visible(value):
     if not value:
