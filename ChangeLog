@@ -8,8 +8,6 @@
 
 	* src/guake.py: Adding a call to test_gconf in main section of module.
 
-	* TODO: Updated.
-
 2007-06-17  Gabriel Falcao <gabrielteratos@gmail.com>
 
 	* data/guake.schema: Adding two more keys: scrollbar visibe (bool) and

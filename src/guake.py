@@ -632,7 +632,7 @@ class Guake(SimpleGladeApp):
         self.term_list[last_added].set_visible_bell(False) # without visible beep
         self.term_list[last_added].set_scroll_on_output(True) # auto scroll
         self.term_list[last_added].set_scroll_on_keystroke(True) # auto scroll
-        self.term_list[last_added].set_scroll_background(True) # auto scroll
+        #self.term_list[last_added].set_scroll_background(True)
         history_size = self.client.get_int(GCONF_PATH+'general/history_size')
         self.term_list[last_added].set_scrollback_lines(history_size) # history size
         self.term_list[last_added].set_sensitive(True)
