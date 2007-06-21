@@ -49,11 +49,14 @@ Guake Todo
  * Implement a little option in prefs dialog to set status icon visibility
 
  * Put a shortcut in gnome menu: System->Preferences-> Guake
+ 
     - This will show the guake preferences, so user will can configure guake thought without the statusicon shown
 
  * Make that the right click on VTE show a context menu with all options of statusicon menu but show_hide
 
  * Remove the method update_ui() and threadfy the process of animate show and hide.
+
+    - I think this can optimize the show/hide.
 
  * Show error when keybind fails - PARTIALLY IMPLEMENTED
 
