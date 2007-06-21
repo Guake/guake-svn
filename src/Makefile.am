@@ -5,7 +5,6 @@ bin_SCRIPTS = guake
 
 guakelibdir = $(libdir)/guake
 guakelib_DATA = \
-	dialogs.py \
 	guake.py \
 	common.py \
 	simplegladeapp.py \

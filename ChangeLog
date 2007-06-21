@@ -1,3 +1,9 @@
+2007-06-21  Lincoln de Sousa <lincoln@archlinux-br.org>
+
+	* src/dialogs.py: Removed.
+
+	* src/Makefile.am: Removing dialog.py from extra dist list.
+
 2007-06-20  Gabriel Falcao <gabrielteratos@gmail.com>
 
 	* src/guake.py: Added a filter to choose only image files in prefs dialog
