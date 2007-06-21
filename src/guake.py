@@ -115,8 +115,13 @@ class PrefsDialog(SimpleGladeApp):
 
         # Preview when selecting a bgimage
         self.selection_preview = gtk.Image()
+        self.file_filter = gtk.FileFilter()
+        self.file_filter.add_pattern("*.jp[e]?g")
+        self.file_filter.add_pattern("*.png")
+        self.file_filter.add_pattern("*.svg")
         self.bgfilechooser = self.get_widget('bgimage-filechooserbutton')
         self.bgfilechooser.set_preview_widget(self.selection_preview)
+        self.bgfilechooser.set_filter(self.file_filter)
         self.bgfilechooser.connect('update-preview', self.update_preview_cb,
                 self.selection_preview)
 
@@ -338,9 +343,12 @@ class PrefsDialog(SimpleGladeApp):
         """
         filename = file_chooser.get_preview_filename()
         if filename:
-            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 256, 256)
-            preview.set_from_pixbuf(pixbuf)
-            file_chooser.set_preview_widget_active(True)
+            try:
+                pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 256, 256)
+                preview.set_from_pixbuf(pixbuf)
+                file_chooser.set_preview_widget_active(True)
+            except gobject.GError:
+                pass #this exception is raised when user chooses a non-image file or a directory
         else:
             file_chooser.set_preview_widget_active(False)
 
