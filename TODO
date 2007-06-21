@@ -46,6 +46,15 @@ Guake Todo
     can be used to notify when guake is opened
     to show all errors
 
+ * Implement a little option in prefs dialog to set status icon visibility
+
+ * Put a shortcut in gnome menu: System->Preferences-> Guake
+    - This will show the guake preferences, so user will can configure guake thought without the statusicon shown
+
+ * Make that the right click on VTE show a context menu with all options of statusicon menu but show_hide
+
+ * Remove the method update_ui() and threadfy the process of animate show and hide.
+
  * Show error when keybind fails - PARTIALLY IMPLEMENTED
 
  * Maybe create a namespace to store all standard messages, specialy errors
