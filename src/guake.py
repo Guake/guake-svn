@@ -127,6 +127,7 @@ class PrefsDialog(SimpleGladeApp):
 
     def show(self):
         self.get_widget('config-window').show_all()
+        self.get_widget('config-window').deiconify()
 
     def hide(self):
         self.get_widget('config-window').hide()
@@ -444,6 +445,7 @@ class Guake(SimpleGladeApp):
         self.window.move(0, 0)
         self.window.show()
         self.window.stick()
+        self.window.deiconify()
         self.animate_show()
         if not self.term_list:
             self.add_tab()
@@ -735,7 +737,7 @@ if __name__ == '__main__':
     from dbusiface import dbus_init
     from common import test_gconf, ShowableError
     main()
-
+    
     if not test_gconf():
         raise ShowableError(_('Guake can not init!'),
             _('Gconf Error.\n'
