@@ -365,11 +365,8 @@ class Guake(SimpleGladeApp):
         # setting global hotkey!
         globalhotkeys.init()
         key = self.client.get_string(GHOTKEYS[0][0])
-        bind_result = globalhotkeys.bind(key, self.show_hide)
-        if not bind_result:
-            print "Error when binding %s"%key
-            import sys
-            sys.exit(1)
+        globalhotkeys.bind(key, self.show_hide)
+
         # trayicon!
         tray_icon = GuakeStatusIcon()
         tray_icon.connect('popup-menu', self.show_menu)
@@ -443,10 +440,10 @@ class Guake(SimpleGladeApp):
         self.window.set_gravity(gtk.gdk.GRAVITY_NORTH)
         self.visible = True
         self.window.move(0, 0)
-        self.window.show()
         self.window.stick()
         self.window.deiconify()
         self.animate_show()
+        self.notebook.grab_focus()
         if not self.term_list:
             self.add_tab()
 
