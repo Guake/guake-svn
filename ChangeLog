@@ -4,7 +4,8 @@
 	* src/guake.py (PrefsDialog.load_configs): Widget spinHistorySize renamed
 	to historysize-spinbutton to follow the name of other widgets, because of
 	this, the callback on_spinHistorySize_value_changed was renamed to
-	on_historysize_spinbutton_value_changed.
+	on_historysize_spinbutton_value_changed. Removed animate flag button
+	changer.
 
 	* src/guake.py (PrefsDialog.load_configs): Adding warnings when unable to
 	parse a color.
