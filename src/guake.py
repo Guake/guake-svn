@@ -156,8 +156,8 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('hide-onlostfocus-checkbutton').set_active(ac)
 
         # animate flag
-        ac = self.client.get_bool(GCONF_PATH + 'general/window_animate')
-        self.get_widget('animate-checkbutton').set_active(ac)
+        #ac = self.client.get_bool(GCONF_PATH + 'general/window_animate')
+        #self.get_widget('animate-checkbutton').set_active(ac)
 
         # on top flag
         ac = self.client.get_bool(GCONF_PATH + 'general/window_ontop')
