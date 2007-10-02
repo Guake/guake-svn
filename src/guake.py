@@ -307,10 +307,9 @@ class PrefsDialog(SimpleGladeApp):
         self.guake.set_bgcolor()
 
     def on_bgimage_filechooserbutton_selection_changed(self, bnt):
-        file = bnt.get_filename()
-        if file:
-            self.client.set_string(GCONF_PATH + 'style/background/image',
-                    file)
+        f = bnt.get_filename()
+        if f:
+            self.client.set_string(GCONF_PATH + 'style/background/image', f)
             self.guake.set_bgimage()
 
     def on_chk_bg_transparent_toggled(self, togglebutton):
