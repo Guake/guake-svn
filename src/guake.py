@@ -31,6 +31,7 @@ import dbus
 
 import os
 import sys
+import warnings
 import common
 from common import _
 from simplegladeapp import SimpleGladeApp, bindtextdomain
@@ -144,7 +145,7 @@ class PrefsDialog(SimpleGladeApp):
 
         # history size
         val = self.client.get_int(GCONF_PATH+'general/history_size')
-        self.get_widget('spinHistorySize').set_value(val)
+        self.get_widget('historysize-spinbutton').set_value(val)
 
         # scrollbar
         ac = self.client.get_bool(GCONF_PATH + 'general/use_scrollbar')
@@ -182,8 +183,7 @@ class PrefsDialog(SimpleGladeApp):
             color = gtk.gdk.color_parse(val)
             self.get_widget('font-colorbutton').set_color(color)
         except (ValueError, TypeError):
-            # unable to parse color
-            pass
+            warnings.warn('Unable to parse color %s' % val, Warning)
 
         # background
         val = self.client.get_string(GCONF_PATH+'style/background/color')
@@ -191,8 +191,7 @@ class PrefsDialog(SimpleGladeApp):
             color = gtk.gdk.color_parse(val)
             self.get_widget('bg-colorbutton').set_color(color)
         except (ValueError, TypeError):
-            # unable to parse color
-            pass
+            warnings.warn('Unable to parse color %s' % val, Warning)
             
         self.guake.use_bgimage = self.client.get_bool(GCONF_PATH+'general/use_bgimage')
         self.get_widget('chk_bg_transparent').set_active(not self.guake.use_bgimage)
@@ -249,8 +248,9 @@ class PrefsDialog(SimpleGladeApp):
         self.get_widget('treeview-keys').expand_all()
         
     # -- callbacks --
-    def on_spinHistorySize_value_changed(self, spinBtn):
-        val = int(spinBtn.get_value())
+
+    def on_historysize_spinbutton_value_changed(self, spin):
+        val = int(spin.get_value())
         self.client.set_int(GCONF_PATH + 'general/history_size', val)
         
     def on_show_scrollbar_checkbutton_toggled(self, chk):
@@ -345,11 +345,14 @@ class PrefsDialog(SimpleGladeApp):
         filename = file_chooser.get_preview_filename()
         if filename:
             try:
-                pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 256, 256)
+                mkpb = gtk.gdk.pixbuf_new_from_file_at_size
+                pixbuf = mkpb(filename, 256, 256)
                 preview.set_from_pixbuf(pixbuf)
                 file_chooser.set_preview_widget_active(True)
             except gobject.GError:
-                pass #this exception is raised when user chooses a non-image file or a directory
+                # this exception is raised when user chooses a non-image
+                # file or a directory
+                pass
         else:
             file_chooser.set_preview_widget_active(False)
 
@@ -407,7 +410,7 @@ class Guake(SimpleGladeApp):
             self.hide()
         
     def refresh(self):
-        # FIXME: vte.Terminal need to be showed with his parent window to
+        # FIXME: vte.Terminal need to be shown with his parent window to
         # can load his configs of back/fore color, fonts, etc.
         self.window.show_all()
         self.window.hide()
@@ -436,41 +439,18 @@ class Guake(SimpleGladeApp):
             self.hide()
 
     def show(self, wwidth, hheight):
-        self.window.set_position(gtk.WIN_POS_NONE)
-        self.window.set_gravity(gtk.gdk.GRAVITY_NORTH)
-        self.visible = True
-        self.window.move(0, 0)
-        self.window.stick()
-        self.window.deiconify()
-        self.animate_show()
-        self.notebook.grab_focus()
+        # add tab must be called before window.show to avoid a
+        # blank screen before adding the tab.
         if not self.term_list:
             self.add_tab()
+        self.visible = True
+        self.window.move(0, 0)
+        self.resize(*self.get_final_window_size())
+        self.window.show_all()
 
     def hide(self):
-        self.animate_hide()
         self.window.hide() # FIXME: Don't use hide_all here!
-        self.window.unstick()
         self.visible = False
-
-    def animate_show(self, *args):
-        width, final_height = self.get_final_window_size()
-        if self.client.get_bool(GCONF_PATH+'general/window_animate'):
-            self.resize(width, 1)
-            for i in range(1, final_height, self.animation_speed):
-                self.resize(width, i)
-                common.update_ui()
-        else:
-            self.resize(width, final_height)
-            common.update_ui()
-
-    def animate_hide(self,*args):
-        if self.client.get_bool(GCONF_PATH+'general/window_animate'):
-            width, final_height = self.get_final_window_size()
-            l = range(1, final_height, self.animation_speed)
-            for i in reversed(l):
-                self.resize(width, i)
-                common.update_ui()
 
     def get_window_size(self):
         width = self.window.get_screen().get_width()
